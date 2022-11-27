@@ -46,8 +46,10 @@ export class Controller {
     quizAnswerA() {
         let state = this.model.state.get(0);
         if (this.view.quizAnswerA.innerText == state.items[state.selectedItem].a_answer) {
+            this.view.quizAnswerA.classList.add('success');
             this.#onSuccess();
         } else {
+            this.view.quizAnswerA.classList.add('failure');
             this.#onFailure();
         }
     }
@@ -55,8 +57,10 @@ export class Controller {
     quizAnswerB() {
         let state = this.model.state.get(0);
         if (this.view.quizAnswerB.innerText == state.items[state.selectedItem].a_answer) {
+            this.view.quizAnswerB.classList.add('success');
             this.#onSuccess();
         } else {
+            this.view.quizAnswerB.classList.add('failure');
             this.#onFailure();
         }
     }
@@ -64,8 +68,10 @@ export class Controller {
     quizAnswerC() {
         let state = this.model.state.get(0);
         if (this.view.quizAnswerC.innerText == state.items[state.selectedItem].a_answer) {
+            this.view.quizAnswerC.classList.add('success');
             this.#onSuccess();
         } else {
+            this.view.quizAnswerC.classList.add('failure');
             this.#onFailure();
         }
     }
@@ -73,28 +79,54 @@ export class Controller {
     quizAnswerD() {
         let state = this.model.state.get(0);
         if (this.view.quizAnswerD.innerText == state.items[state.selectedItem].a_answer) {
+            this.view.quizAnswerD.classList.add('success');
             this.#onSuccess();
         } else {
+            this.view.quizAnswerD.classList.add('failure');
             this.#onFailure();
         }
     }
 
     #onSuccess() {
-        alert('👍');
+        this.#speak('Esatto!');
     }
 
     #onFailure() {
-        alert('👎');
+        this.#speak('Prova ancora!');
+    }
+
+    #speak(text) {
+        var utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        utterance.lang = 'it-IT';
+        utterance.rate = 0.75;
+        window.speechSynthesis.speak(utterance);
     }
 
     quizPrev() {
         this.model.prev();
         this.view.populateContent(this.view.quizContent, this.model.getContent(0));
+        this.view.quizAnswerA.classList.remove('success');
+        this.view.quizAnswerB.classList.remove('success');
+        this.view.quizAnswerC.classList.remove('success');
+        this.view.quizAnswerD.classList.remove('success');
+        this.view.quizAnswerA.classList.remove('failure');
+        this.view.quizAnswerB.classList.remove('failure');
+        this.view.quizAnswerC.classList.remove('failure');
+        this.view.quizAnswerD.classList.remove('failure');
     }
 
     quizNext() {
         this.model.next();
         this.view.populateContent(this.view.quizContent, this.model.getContent(0));
+        this.view.quizAnswerA.classList.remove('success');
+        this.view.quizAnswerB.classList.remove('success');
+        this.view.quizAnswerC.classList.remove('success');
+        this.view.quizAnswerD.classList.remove('success');
+        this.view.quizAnswerA.classList.remove('failure');
+        this.view.quizAnswerB.classList.remove('failure');
+        this.view.quizAnswerC.classList.remove('failure');
+        this.view.quizAnswerD.classList.remove('failure');
     }
 
 }

@@ -148,6 +148,14 @@ body {
     background-color: black;
 }
 
+.success {
+    background-color: green;
+}
+
+.failure {
+    background-color: red;
+}
+
 
 /*
 @media only screen and (orientation:landscape) {
