@@ -32,6 +32,10 @@ export class Model {
 	getContent(mode) {
 		let value = this.state.get(mode);
 		let content = value.items[value.selectedItem];
+
+		if (mode == 0) {
+			return [content.question].concat(this.shuffleArray([content.a_answer, content.b_answer, content.c_answer, content.d_answer]));
+		}
 		return [content.question, content.a_answer, content.b_answer, content.c_answer, content.d_answer];
 	}
 
