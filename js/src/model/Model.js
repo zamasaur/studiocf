@@ -16,6 +16,20 @@ export class Model {
 		console.log(this.state.get(this.currentMode).items);/*!!!*/
 	}
 
+	prev() {
+		let state = this.state.get(this.currentMode);
+		if (state.selectedItem > 0) {
+			this.state.get(this.currentMode).selectedItem--;
+		}
+	}
+
+	next() {
+		let state = this.state.get(this.currentMode);
+		if (state.selectedItem < state.items.length) {
+			this.state.get(this.currentMode).selectedItem++;
+		}
+	}
+
 	getSubjects() {
 		let subjects = [];
 		Object.entries(this.jsondata).forEach(([key, value]) => {

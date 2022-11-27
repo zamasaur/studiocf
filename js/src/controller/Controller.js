@@ -45,46 +45,56 @@ export class Controller {
 
     quizAnswerA() {
         let state = this.model.state.get(0);
-        if(this.view.quizAnswerA.innerText == state.items[state.selectedItem].a_answer){
-            alert('ci hai preso');
+        if (this.view.quizAnswerA.innerText == state.items[state.selectedItem].a_answer) {
+            this.#onSuccess();
         } else {
-            alert('hai toppato');
+            this.#onFailure();
         }
     }
 
     quizAnswerB() {
         let state = this.model.state.get(0);
-        if(this.view.quizAnswerB.innerText == state.items[state.selectedItem].a_answer){
-            alert('ci hai preso');
+        if (this.view.quizAnswerB.innerText == state.items[state.selectedItem].a_answer) {
+            this.#onSuccess();
         } else {
-            alert('hai toppato');
+            this.#onFailure();
         }
     }
 
     quizAnswerC() {
         let state = this.model.state.get(0);
-        if(this.view.quizAnswerC.innerText == state.items[state.selectedItem].a_answer){
-            alert('ci hai preso');
+        if (this.view.quizAnswerC.innerText == state.items[state.selectedItem].a_answer) {
+            this.#onSuccess();
         } else {
-            alert('hai toppato');
+            this.#onFailure();
         }
     }
 
     quizAnswerD() {
         let state = this.model.state.get(0);
-        if(this.view.quizAnswerD.innerText == state.items[state.selectedItem].a_answer){
-            alert('ci hai preso');
+        if (this.view.quizAnswerD.innerText == state.items[state.selectedItem].a_answer) {
+            this.#onSuccess();
         } else {
-            alert('hai toppato');
+            this.#onFailure();
         }
     }
 
+    #onSuccess() {
+        alert('👍');
+    }
+
+    #onFailure() {
+        alert('👎');
+    }
+
     quizPrev() {
-        alert('TODO');
+        this.model.prev();
+        this.view.populateContent(this.view.quizContent, this.model.getContent(0));
     }
 
     quizNext() {
-        alert('TODO');
+        this.model.next();
+        this.view.populateContent(this.view.quizContent, this.model.getContent(0));
     }
 
 }
