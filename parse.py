@@ -60,17 +60,6 @@ def getNormalizedTxt(file):
     if text[len(text)-1] == "\n":
         text = text[0:len(text)-1]
 
-    # remove wrong aswers
-    regex = r"(B: .*)$"
-    subst = ""
-    text = re.sub(regex, subst, text, 0, re.MULTILINE)
-    regex = r"(C: .*)$"
-    subst = ""
-    text = re.sub(regex, subst, text, 0, re.MULTILINE)
-    regex = r"(D: .*)$"
-    subst = ""
-    text = re.sub(regex, subst, text, 0, re.MULTILINE)
-
     # remove multiple newline
     regex = r"\n(?=(\n))"
     subst = ""
@@ -89,11 +78,14 @@ def getData(text, scope=""):
     count = 0
 
     for line in text.split('\n'):
-        modulus = count % 5
+        modulus = count % 8
         if (modulus == 0):
             list.append({
                 "question": line[-len(line)+len("Domanda: "):],
-                "answer": "",
+                "a_answer": "",
+                "b_answer": "",
+                "c_answer": "",
+                "d_answer": "",
                 "metadata": {
                     "scope": scope,
                     "level": 1,
@@ -102,15 +94,21 @@ def getData(text, scope=""):
                 }
             })
         elif (modulus == 1):
-            list[count//5]["answer"] = line[-len(line)+len("A: "):]
+            list[count//8]["a_answer"] = line[-len(line)+len("A: "):]
         elif (modulus == 2):
-            list[count //
-                 5]["metadata"]["level"] = int(line[-len(line)+len("Livello: "):])
+            list[count//8]["b_answer"] = line[-len(line)+len("B: "):]
         elif (modulus == 3):
+            list[count//8]["c_answer"] = line[-len(line)+len("C: "):]
+        elif (modulus == 4):
+            list[count//8]["d_answer"] = line[-len(line)+len("D: "):]
+        elif (modulus == 5):
             list[count //
-                 5]["metadata"]["subcontent"] = line[-len(line)+len("Sub-contenuto: "):]
+                 8]["metadata"]["level"] = int(line[-len(line)+len("Livello: "):])
+        elif (modulus == 6):
+            list[count //
+                 8]["metadata"]["subcontent"] = line[-len(line)+len("Sub-contenuto: "):]
         else:
-            list[count//5]["metadata"]["isPractical"] = False if line[-len(
+            list[count//8]["metadata"]["isPractical"] = False if line[-len(
                 line)+len("Pratico: "):] == "NO" else True
         count += 1
 

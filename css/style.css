@@ -1,84 +1,160 @@
-body{
+body {
     width: 100vw;
     height: 100vh;
     margin: 0;
     padding: 0;
     font-size: 0;
+}
+
+#root {
+    font-size: 5vh;
+    color: white;
+    background-color: black;
     font-family: "Lucida Console";
 }
 
-#root{
+#carousel {
     width: 100vw;
     height: 100vh;
+}
+
+.carousel-control-prev {
+    height: 10vh;
+}
+
+.carousel-control-next {
+    height: 10vh;
+}
+
+.carousel-item {
+    width: 100vw;
+    height: 100vh;
+}
+
+.carousel-indicators {
+    height: 0vh;
+    margin: 0;
+    align-items: center;
+}
+
+.title {
+    height: 10vh;
+    align-items: center;
+    justify-content: center;
+}
+
+.main {
+    height: 90vh;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5vh;
+}
+
+.toolbar {
+    height: 10vh;
+}
+
+.form-select {
+    color: white;
+    border-width: 0.5vmin;
+    border-color: white;
+    background-color: black;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.form-select:active {
+    outline: none;
+    box-shadow: none;
+    color: white;
+    border-color: white;
+    background-color: white;
+}
+
+.form-select:focus {
+    outline: none;
+    box-shadow: none;
+    color: white;
+    border-color: white;
     background-color: black;
 }
 
-#search{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.form-select option {
+    color: white
+}
+
+.content {
+    height: 70vh;
+    background-color: green;
+}
+
+.content>* {
+    display: block;
+    resize: none;
+    overflow-y: scroll;
     width: 100vw;
-    height: 20vh;
-}
-
-#search>textarea{
-    display: block;
-    width: calc(100vw - 5vmin);
-    height: calc(20vh - 5vmin);
-    resize: none;
-}
-
-#result{
-    display: flex;
-    width: 100vw;
-    height: 75vh;
-}
-
-#question{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50vw;
-    height: 75vh;
-}
-
-#question>textarea{
-    display: block;
-    width: calc(50vw - 5vmin);
-    height: calc(75vh - 5vmin);
-    resize: none;
-}
-
-#answer{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50vw;
-    height: 75vh;
-}
-
-#answer>textarea{
-    display: block;
-    width: calc(50vw - 5vmin);
-    height: calc(75vh - 5vmin);
-    resize: none;
-}
-
-textarea{
-    box-sizing: border-box;
-    padding: 4vmin;
-    font-size: 4vmin;
-    border: 1vmin solid grey;
+    font-size: 2vh;
     color: white;
+    padding: 2vmin;
+    border: 0.5vmin solid white;
+}
+
+.question {
+    height: 30vh;
     background-color: black;
 }
 
-#counter{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100vw;
-    height: 5vh;
-    font-size: 4vmin;
-    color: white;
+.a_answer {
+    height: 10vh;
+    background-color: black;
 }
+
+.b_answer {
+    height: 10vh;
+    background-color: black;
+}
+
+.c_answer {
+    height: 10vh;
+    background-color: black;
+}
+
+.d_answer {
+    height: 10vh;
+    background-color: black;
+}
+
+.commandbar {
+    height: 10vh;
+}
+
+.btn {
+    border-width: 0.5vmin;
+    border-color: white;
+    background-color: black;
+}
+
+.btn:active {
+    outline: none;
+    box-shadow: none;
+    color: black;
+    border-color: white;
+    background-color: white;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: white;
+    background-color: black;
+}
+
+
+/*
+@media only screen and (orientation:landscape) {
+    body {
+        width: 100vh;
+        transform: rotate(-90deg);
+        background-color: red;
+    }
+}
+*/

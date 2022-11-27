@@ -1,3 +1,7 @@
+import { Model } from "./src/model/Model.js";
+import { View } from "./src/view/View.js";
+import { Controller } from "./src/controller/Controller.js";
+
 window.addEventListener("load", () => {
 
     fetch("./js/data.json")
@@ -5,7 +9,7 @@ window.addEventListener("load", () => {
             return response.json();
         })
         .then(jsondata => {
-            const text = jsondata["Diritto del mercato finanziario e degli intermediari"][0].question;
+            /*const text = jsondata["Diritto del mercato finanziario e degli intermediari"][0].question;
 
             document.querySelector('textarea').value = text;
 
@@ -17,7 +21,12 @@ window.addEventListener("load", () => {
             utterance.rate = 0.75;
             //utterance.voice = voices[0];
             //utterance.volume = 2;
-            window.speechSynthesis.speak(utterance);
+            window.speechSynthesis.speak(utterance);*/
+            
+            let model = new Model(jsondata);
+            let view = new View();
+            let controller = new Controller(model, view);
+            controller.run();
         });
 
 });
