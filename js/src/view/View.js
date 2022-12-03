@@ -2,17 +2,31 @@ export class View {
 
 	constructor() {
 		this.quizSubject = document.querySelector('#quiz .subject');
+		this.quizContent = document.querySelector('#quiz .content');
+		this.quizSubcontent = document.querySelector('#quiz .subcontent');
 		this.quizLevel = document.querySelector('#quiz .level');
-		this.quizContent = document.querySelectorAll('#quiz .content>*');
+
+		this.quizId = document.querySelector('#quiz .id');
+		this.quizFraction = document.querySelector('#quiz .fraction');
+
+		this.quizData = document.querySelectorAll('#quiz .data>*');
 		this.quizAnswerA = document.querySelector('#quiz .a_answer');
 		this.quizAnswerB = document.querySelector('#quiz .b_answer');
 		this.quizAnswerC = document.querySelector('#quiz .c_answer');
 		this.quizAnswerD = document.querySelector('#quiz .d_answer');
+
 		this.quizPrev = document.querySelector('#quiz .prev');
 		this.quizNext = document.querySelector('#quiz .next');
 	}
 
 	populateSelect(select, options) {
+		let i = 0;
+		Array.from(select.getElementsByTagName("option")).forEach(o => {
+			if (i > 0) {
+				o.remove();
+			}
+			i++;
+		});
 
 		options.forEach(option => {
 			let element = document.createElement("option");
@@ -22,14 +36,33 @@ export class View {
 		});
 	}
 
-	populateContent(div, content) {
-		for (let i = 0; i < div.length; i++) {
-			div[i].innerText = content[i];
+	populateData(element, data) {
+		for (let i = 0; i < element.length; i++) {
+			element[i].innerText = data[i];
 		}
+	}
+
+	setCounter(id, numerator, denominator) {
+		this.quizId.innerText = id;
+		this.quizFraction.innerText = (numerator + 1) + "/" + denominator;
 	}
 
 	bindQuizSubject(handler) {
 		this.quizSubject.addEventListener('change', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindQuizContent(handler) {
+		this.quizContent.addEventListener('change', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindQuizSubcontent(handler) {
+		this.quizSubcontent.addEventListener('change', event => {
 			event.preventDefault();
 			handler();
 		});

@@ -19,14 +19,6 @@
 
     <div id="root">
         <div id="carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
-            <!-- 
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active" aria-current="true"
-                    aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-            -->
             <div class="carousel-inner">
                 <div id="quiz" class="carousel-item active">
                     <div class="d-flex title">QUIZ</div>
@@ -35,16 +27,26 @@
                             <select class="form-select subject">
                                 <option value="all" selected>Qualsiasi materia</option>
                             </select>
+                            <select class="form-select content">
+                                <option value="all" selected>Qualsiasi contenuto</option>
+                            </select>
+                            <select class="form-select subcontent">
+                                <option value="all" selected>Qualsiasi sub-contenuto</option>
+                            </select>
                             <select class="form-select level">
                                 <option value="all" selected>Qualsiasi livello</option>
                             </select>
                         </div>
-                        <div class="d-flex-column content">
-                            <div class="question"></div>
-                            <div class="a_answer"></div>
-                            <div class="b_answer"></div>
-                            <div class="c_answer"></div>
-                            <div class="d_answer"></div>
+                        <div class="d-flex justify-content-between align-items-center counter">
+                            <div>id:</span><span class="id">Loading...</span></div>
+                            <div><span class="fraction">Loading...</span></div>
+                        </div>
+                        <div class="d-flex-column data">
+                            <div class="question">Loading...</div>
+                            <div class="a_answer">Loading...</div>
+                            <div class="b_answer">Loading...</div>
+                            <div class="c_answer">Loading...</div>
+                            <div class="d_answer">Loading...</div>
                         </div>
                         <div class="d-flex commandbar">
                             <button type="button" class="btn btn-primary w-50 prev">Precedente</button>

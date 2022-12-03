@@ -19,11 +19,11 @@ body {
 }
 
 .carousel-control-prev {
-    height: 10vh;
+    height: 7.5vh;
 }
 
 .carousel-control-next {
-    height: 10vh;
+    height: 7.5vh;
 }
 
 .carousel-item {
@@ -38,20 +38,20 @@ body {
 }
 
 .title {
-    height: 10vh;
+    height: 7.5vh;
     align-items: center;
     justify-content: center;
 }
 
 .main {
-    height: 90vh;
+    height: 92.5vh;
     align-items: center;
     justify-content: center;
     font-size: 2.5vh;
 }
 
 .toolbar {
-    height: 10vh;
+    height: 7.5vh;
 }
 
 .form-select {
@@ -79,15 +79,20 @@ body {
 }
 
 .form-select option {
-    color: white
+    color: white;
 }
 
-.content {
+.counter {
+    height: 7.5vh;
+    padding: 2vmin;
+}
+
+.data {
     height: 70vh;
     background-color: green;
 }
 
-.content>* {
+.data>* {
     display: block;
     resize: none;
     overflow-y: scroll;
@@ -99,32 +104,32 @@ body {
 }
 
 .question {
-    height: 30vh;
+    height: 25vh;
     background-color: black;
 }
 
 .a_answer {
-    height: 10vh;
+    height: 11.25vh;
     background-color: black;
 }
 
 .b_answer {
-    height: 10vh;
+    height: 11.25vh;
     background-color: black;
 }
 
 .c_answer {
-    height: 10vh;
+    height: 11.25vh;
     background-color: black;
 }
 
 .d_answer {
-    height: 10vh;
+    height: 11.25vh;
     background-color: black;
 }
 
 .commandbar {
-    height: 10vh;
+    height: 7.5vh;
 }
 
 .btn {

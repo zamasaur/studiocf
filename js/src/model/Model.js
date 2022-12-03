@@ -4,16 +4,17 @@ export class Model {
 		this.jsondata = jsondata;
 		this.currentMode = 0; // 0 = quiz, 1 = search, 2 = listen
 		this.state = new Map();
-		this.setFilter('all', 'all');
+		this.setFilter('all', 'all', 'all', 'all');
 	}
 
-	setFilter(subject, level) {
+	setFilter(subject, content, subcontent, level) {
+		content = subject == 'all' ? 'all' : content;
+		subcontent = content == 'all' ? 'all' : subcontent;
 		this.state.set(this.currentMode, {
-			filter: { subject: subject, level: level },
-			items: this.shuffleArray(this.#fetchItems(subject, level)),
+			filter: { subject: subject, content: content, subcontent: subcontent, level: level },
+			items: this.shuffleArray(this.#fetchItems(subject, content, subcontent, level)),
 			selectedItem: 0,
 		});
-		console.log(this.state.get(this.currentMode).items);/*!!!*/
 	}
 
 	prev() {
@@ -30,27 +31,79 @@ export class Model {
 		}
 	}
 
+	getState(mode) {
+		return JSON.parse(JSON.stringify(this.state.get(mode)));
+	}
+
 	getSubjects() {
-		let subjects = [];
-		Object.entries(this.jsondata).forEach(([key, value]) => {
-			subjects = subjects.concat(key);
+		let items = this.jsondata;
+		let set = new Set();
+
+		items.forEach(item => {
+			set.add(item.metadata.subject);
 		});
 
-		return subjects;
+		return Array.from(set);
+	}
+
+	getContents() {
+		let state = this.state.get(this.currentMode);
+		let items = this.jsondata;
+		let set = new Set();
+
+		items.forEach(item => {
+			if (state.filter.subject == item.metadata.subject) {
+				set.add(item.metadata.content);
+			}
+		});
+
+		return Array.from(set);
+	}
+
+	getSubcontents() {
+		let state = this.state.get(this.currentMode);
+		let items = this.jsondata;
+		let set = new Set();
+
+		items.forEach(item => {
+			if (state.filter.content == item.metadata.content) {
+				set.add(item.metadata.subcontent);
+			}
+		});
+
+		return Array.from(set);
 	}
 
 	getLevels() {
-		return [1, 2];
+		let state = this.state.get(this.currentMode);
+		let items = this.jsondata;
+		let set = new Set();
+
+		items.forEach(item => {
+			if ((state.filter.subject == 'all' || item.metadata.subject == state.filter.subject) &&
+				(state.filter.content == 'all' || item.metadata.content == state.filter.content) &&
+				(state.filter.subcontent == 'all' || item.metadata.subcontent == state.filter.subcontent)) {
+
+				set.add(item.metadata.level);
+			}
+		});
+
+		return Array.from(set);
 	}
 
-	getContent(mode) {
-		let value = this.state.get(mode);
-		let content = value.items[value.selectedItem];
+	getData(mode) {
+		let state = this.state.get(mode);
+
+		if (state.items.length == 0) {
+			return [null, null, null, null, null];
+		}
+
+		let data = state.items[state.selectedItem];
 
 		if (mode == 0) {
-			return [content.question].concat(this.shuffleArray([content.a_answer, content.b_answer, content.c_answer, content.d_answer]));
+			return [data.question].concat(this.shuffleArray([data.a_answer, data.b_answer, data.c_answer, data.d_answer]));
 		}
-		return [content.question, content.a_answer, content.b_answer, content.c_answer, content.d_answer];
+		return [data.question, data.a_answer, data.b_answer, data.c_answer, data.d_answer];
 	}
 
 	shuffleArray(array) {
@@ -61,21 +114,15 @@ export class Model {
 		return array;
 	}
 
-	#fetchItems(subject, level) {
+	#fetchItems(subject, content, subcontent, level) {
 
-		let items = [];
-		Object.entries(this.jsondata).forEach(([key, value]) => {
-			if (subject == 'all' || subject == key) {
-				items = items.concat(value);
-			}
-		});
-
-		if (level == 'all') {
-			return items;
-		}
+		let items = this.jsondata;
 
 		return items.filter((item) => {
-			return item.metadata.level == level;
+			return (subject == 'all' || item.metadata.subject == subject) &&
+				(content == 'all' || item.metadata.content == content) &&
+				(subcontent == 'all' || item.metadata.subcontent == subcontent) &&
+				(level == 'all' || item.metadata.level == level);
 		});
 	}
 

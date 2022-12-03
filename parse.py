@@ -73,7 +73,7 @@ def getNormalizedTxt(file):
     return text
 
 
-def getData(text, scope=""):
+def getData(text, subject='', content="", id=0):
     list = []
     count = 0
 
@@ -87,12 +87,15 @@ def getData(text, scope=""):
                 "c_answer": "",
                 "d_answer": "",
                 "metadata": {
-                    "scope": scope,
-                    "level": 1,
+                    "subject": subject,
+                    "content": content,
                     "subcontent": "",
-                    "isPractical": False
+                    "level": 1,
+                    "isPractical": False,
+                    "id": id
                 }
             })
+            id += 1
         elif (modulus == 1):
             list[count//8]["a_answer"] = line[-len(line)+len("A: "):]
         elif (modulus == 2):
@@ -121,27 +124,22 @@ root = './resources/pdf/repaired'
 dirList = [item for item in os.listdir(
     root) if os.path.isdir(os.path.join(root, item))]
 
-list = {}
+list = []
+id = 0
 
 for dir in dirList:
-    list[dir[2:]] = []
+    subject = dir[2:]
     fileList = glob.glob("./resources/pdf/repaired/"+dir+"/*.pdf")
     for file in fileList:
         print(file[len(root)+1:])
-        scope = os.path.basename(file)[0:len(os.path.basename(file))-4]
-        list[dir[2:]] += getData(getNormalizedTxt(file), scope)
+        content = os.path.basename(file)[0:len(os.path.basename(file))-4]
+        list += getData(getNormalizedTxt(file), subject, content, id)
+        id = len(list)
 
 file = open(r"./js/data.json", "w", encoding='utf8')
 file.writelines(json.dumps(list, ensure_ascii=False, indent=3))
 
 print("\n")
 
-count = 0
-for item in list:
-    count += len(list[item])
-    print(item+" "+str(len(list[item])))
-
-print("total "+str(count))
-print("\n")
 print("done.")
 print("\n")
