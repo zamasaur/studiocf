@@ -4,21 +4,44 @@ export class Controller {
         this.model = model;
         this.view = view;
 
-        /*INIT QUIZ*/
+        this.view.carousel.addEventListener('slide.bs.carousel', (event) => {
+            switch (event.relatedTarget.id) {
+                case 'quiz':
+                    this.model.setCurrentMode(0);
+                    break;
+                case 'lesson':
+                    this.model.setCurrentMode(1);
+                    break;
+                case 'search':
+                    this.model.setCurrentMode(2);
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        this.initQuiz();
+        this.initLesson();
+
+    }
+
+    initQuiz() {
         this.view.populateSelect(this.view.quizSubject, this.model.getSubjects());
         this.view.populateSelect(this.view.quizContent, this.model.getContents());
         this.view.populateSelect(this.view.quizSubcontent, this.model.getSubcontents());
         this.view.populateSelect(this.view.quizLevel, this.model.getLevels());
 
-        let state = this.model.getState(0);
-        this.view.setCounter(state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        let mode = 0;
+        let state = this.model.getState(mode);
+        this.view.setCounter(this.view.quizId, this.view.quizFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
 
-        this.view.populateData(this.view.quizData, this.model.getData(0));
+        this.view.populateData(this.view.quizData, this.model.getData(mode));
 
-        this.view.bindQuizSubject(this.quizSubject.bind(this));
-        this.view.bindQuizContent(this.quizContent.bind(this));
-        this.view.bindQuizSubcontent(this.quizSubcontent.bind(this));
-        this.view.bindQuizLevel(this.quizLevel.bind(this));
+        const selects = [this.view.quizSubject, this.view.quizContent, this.view.quizSubcontent, this.view.quizLevel];
+        this.view.bindSubject(selects, this.handleSubject.bind(this));
+        this.view.bindContent(selects, this.handleContent.bind(this));
+        this.view.bindSubcontent(selects, this.handleSubcontent.bind(this));
+        this.view.bindLevel(selects, this.handleLevel.bind(this));
 
         this.view.bindQuizAnswerA(this.quizAnswerA.bind(this));
         this.view.bindQuizAnswerB(this.quizAnswerB.bind(this));
@@ -27,139 +50,178 @@ export class Controller {
 
         this.view.bindQuizPrev(this.quizPrev.bind(this));
         this.view.bindQuizNext(this.quizNext.bind(this));
+    }
 
+    initLesson() {
+        this.view.populateSelect(this.view.lessonSubject, this.model.getSubjects());
+        this.view.populateSelect(this.view.lessonContent, this.model.getContents());
+        this.view.populateSelect(this.view.lessonSubcontent, this.model.getSubcontents());
+        this.view.populateSelect(this.view.lessonLevel, this.model.getLevels());
+
+        let mode = 1;
+        let state = this.model.getState(mode);
+        this.view.setCounter(this.view.lessonId, this.view.lessonFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+
+        this.view.populateData(this.view.lessonData, this.model.getData(mode));
+
+        const selects = [this.view.lessonSubject, this.view.lessonContent, this.view.lessonSubcontent, this.view.lessonLevel];
+        this.view.bindSubject(selects, this.handleSubject.bind(this));
+        this.view.bindContent(selects, this.handleContent.bind(this));
+        this.view.bindSubcontent(selects, this.handleSubcontent.bind(this));
+        this.view.bindLevel(selects, this.handleLevel.bind(this));
+
+        this.view.bindLessonPlaypause(this.lessonPlaypause.bind(this));
+
+        this.view.setAnswer(this.view.lessonAnswerA, true);
+        this.view.setAnswer(this.view.lessonAnswerB, false);
+        this.view.setAnswer(this.view.lessonAnswerC, false);
+        this.view.setAnswer(this.view.lessonAnswerD, false);
     }
 
     run() {
+        this.view.setLoaded();
         console.log('ready');
     }
 
-    /* HANDLERS */
-    quizSubject() {
-        let subject = this.view.quizSubject.selectedOptions[0].value;
-        let content = this.view.quizContent.getElementsByTagName('option')[0].value;
-        let subcontent = this.view.quizSubcontent.getElementsByTagName('option')[0].value;
-        let level = this.view.quizLevel.getElementsByTagName('option')[0].value;
+    /* FILTERS HANDLERS */
+    handleSubject(selects) {
+        let subject = selects[0].selectedOptions[0].value;
+        let content = selects[1].getElementsByTagName('option')[0].value;
+        let subcontent = selects[2].getElementsByTagName('option')[0].value;
+        let level = selects[3].getElementsByTagName('option')[0].value;
+
+        let mode = this.model.getCurrentMode();
+
+        window.speechSynthesis.cancel(this.model.getUtterance(mode));
+        this.model.setPlaying(false);
+        this.view.lessonPlaypause.innerHTML = '<i class="fa-sharp fa-solid fa-play">';
 
         this.model.setFilter(subject, content, subcontent, level);
-        this.view.populateData(this.view.quizData, this.model.getData(0));
+        let data = mode == 0 ? this.view.quizData : this.view.lessonData;
+        this.view.populateData(data, this.model.getData(mode));
 
-        this.view.populateSelect(this.view.quizContent, this.model.getContents());
-        this.view.populateSelect(this.view.quizSubcontent, this.model.getSubcontents());
-        this.view.populateSelect(this.view.quizLevel, this.model.getLevels());
+        this.view.populateSelect(selects[1], this.model.getContents(mode));
+        this.view.populateSelect(selects[2], this.model.getSubcontents(mode));
+        this.view.populateSelect(selects[3], this.model.getLevels(mode));
 
-        let state = this.model.getState(0);
-        this.view.setCounter(state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        let state = this.model.getState(mode);
+        let elementId = mode == 0 ? this.view.quizId : this.view.lessonId;
+        let elementFraction = mode == 0 ? this.view.quizFraction : this.view.lessonFraction;
+        this.view.setCounter(elementId, elementFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
     }
 
-    quizContent() {
-        let subject = this.view.quizSubject.selectedOptions[0].value;
-        let content = this.view.quizContent.selectedOptions[0].value;
-        let subcontent = this.view.quizSubcontent.getElementsByTagName('option')[0].value;
-        let level = this.view.quizLevel.getElementsByTagName('option')[0].value;
+    handleContent(selects) {
+        let subject = selects[0].selectedOptions[0].value;
+        let content = selects[1].selectedOptions[0].value;
+        let subcontent = selects[2].getElementsByTagName('option')[0].value;
+        let level = selects[3].getElementsByTagName('option')[0].value;
+
+        let mode = this.model.getCurrentMode();
+
+        window.speechSynthesis.cancel(this.model.getUtterance(mode));
+        this.model.setPlaying(false);
+        this.view.lessonPlaypause.innerHTML = '<i class="fa-sharp fa-solid fa-play">';
 
         this.model.setFilter(subject, content, subcontent, level);
-        this.view.populateData(this.view.quizData, this.model.getData(0));
+        let data = mode == 0 ? this.view.quizData : this.view.lessonData;
+        this.view.populateData(data, this.model.getData(mode));
 
-        this.view.populateSelect(this.view.quizSubcontent, this.model.getSubcontents());
-        this.view.populateSelect(this.view.quizLevel, this.model.getLevels());
+        this.view.populateSelect(selects[2], this.model.getSubcontents(mode));
+        this.view.populateSelect(selects[3], this.model.getLevels(mode));
 
-        let state = this.model.getState(0);
-        this.view.setCounter(state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        let state = this.model.getState(mode);
+        let elementId = mode == 0 ? this.view.quizId : this.view.lessonId;
+        let elementFraction = mode == 0 ? this.view.quizFraction : this.view.lessonFraction;
+        this.view.setCounter(elementId, elementFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
     }
 
-    quizSubcontent() {
-        let subject = this.view.quizSubject.selectedOptions[0].value;
-        let content = this.view.quizContent.selectedOptions[0].value;
-        let subcontent = this.view.quizSubcontent.selectedOptions[0].value;
-        let level = this.view.quizLevel.getElementsByTagName('option')[0].value;
+    handleSubcontent(selects) {
+        let subject = selects[0].selectedOptions[0].value;
+        let content = selects[1].selectedOptions[0].value;
+        let subcontent = selects[2].selectedOptions[0].value;
+        let level = selects[3].getElementsByTagName('option')[0].value;
+
+        let mode = this.model.getCurrentMode();
+
+        window.speechSynthesis.cancel(this.model.getUtterance(mode));
+        this.model.setPlaying(false);
+        this.view.lessonPlaypause.innerHTML = '<i class="fa-sharp fa-solid fa-play">';
 
         this.model.setFilter(subject, content, subcontent, level);
-        this.view.populateData(this.view.quizData, this.model.getData(0));
+        let data = mode == 0 ? this.view.quizData : this.view.lessonData;
+        this.view.populateData(data, this.model.getData(mode));
 
-        this.view.populateSelect(this.view.quizLevel, this.model.getLevels());
+        this.view.populateSelect(selects[3], this.model.getLevels(mode));
 
-        let state = this.model.getState(0);
-        this.view.setCounter(state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        let state = this.model.getState(mode);
+        let elementId = mode == 0 ? this.view.quizId : this.view.lessonId;
+        let elementFraction = mode == 0 ? this.view.quizFraction : this.view.lessonFraction;
+        this.view.setCounter(elementId, elementFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
     }
 
-    quizLevel() {
-        let subject = this.view.quizSubject.selectedOptions[0].value;
-        let content = this.view.quizContent.selectedOptions[0].value;
-        let subcontent = this.view.quizSubcontent.selectedOptions[0].value;
-        let level = this.view.quizLevel.selectedOptions[0].value;
+    handleLevel(selects) {
+        let subject = selects[0].selectedOptions[0].value;
+        let content = selects[1].selectedOptions[0].value;
+        let subcontent = selects[2].selectedOptions[0].value;
+        let level = selects[3].selectedOptions[0].value;
+
+        let mode = this.model.getCurrentMode();
+
+        window.speechSynthesis.cancel(this.model.getUtterance(mode));
+        this.model.setPlaying(false);
+        this.view.lessonPlaypause.innerHTML = '<i class="fa-sharp fa-solid fa-play">';
 
         this.model.setFilter(subject, content, subcontent, level);
-        this.view.populateData(this.view.quizData, this.model.getData(0));
+        let data = mode == 0 ? this.view.quizData : this.view.lessonData;
+        this.view.populateData(data, this.model.getData(mode));
 
-        let state = this.model.getState(0);
-        this.view.setCounter(state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        let state = this.model.getState(mode);
+        let elementId = mode == 0 ? this.view.quizId : this.view.lessonId;
+        let elementFraction = mode == 0 ? this.view.quizFraction : this.view.lessonFraction;
+        this.view.setCounter(elementId, elementFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
     }
 
+    /* QUIZ HANDLERS */
     quizAnswerA() {
         let state = this.model.getState(0);
         if (this.view.quizAnswerA.innerText == state.items[state.selectedItem].a_answer) {
-            this.view.quizAnswerA.classList.add('success');
-            this.#onSuccess();
+            this.view.setAnswer(this.view.quizAnswerA, true);
         } else {
-            this.view.quizAnswerA.classList.add('failure');
-            this.#onFailure();
+            this.view.setAnswer(this.view.quizAnswerA, false);
         }
     }
 
     quizAnswerB() {
         let state = this.model.getState(0);
         if (this.view.quizAnswerB.innerText == state.items[state.selectedItem].a_answer) {
-            this.view.quizAnswerB.classList.add('success');
-            this.#onSuccess();
+            this.view.setAnswer(this.view.quizAnswerB, true);
         } else {
-            this.view.quizAnswerB.classList.add('failure');
-            this.#onFailure();
+            this.view.setAnswer(this.view.quizAnswerB, false);
         }
     }
 
     quizAnswerC() {
         let state = this.model.getState(0);
         if (this.view.quizAnswerC.innerText == state.items[state.selectedItem].a_answer) {
-            this.view.quizAnswerC.classList.add('success');
-            this.#onSuccess();
+            this.view.setAnswer(this.view.quizAnswerC, true);
         } else {
-            this.view.quizAnswerC.classList.add('failure');
-            this.#onFailure();
+            this.view.setAnswer(this.view.quizAnswerC, false);
         }
     }
 
     quizAnswerD() {
         let state = this.model.getState(0);
         if (this.view.quizAnswerD.innerText == state.items[state.selectedItem].a_answer) {
-            this.view.quizAnswerD.classList.add('success');
-            this.#onSuccess();
+            this.view.setAnswer(this.view.quizAnswerD, true);
         } else {
-            this.view.quizAnswerD.classList.add('failure');
-            this.#onFailure();
+            this.view.setAnswer(this.view.quizAnswerD, false);
         }
-    }
-
-    #onSuccess() {
-        this.#speak('Esatto!');
-    }
-
-    #onFailure() {
-        this.#speak('Prova ancora!');
-    }
-
-    #speak(text) {
-        var utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        utterance.lang = 'it-IT';
-        utterance.rate = 0.75;
-        window.speechSynthesis.speak(utterance);
     }
 
     quizPrev() {
         this.model.prev();
         let state = this.model.getState(0);
-        this.view.setCounter(state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        this.view.setCounter(this.view.quizId, this.view.quizFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
         this.view.populateData(this.view.quizData, this.model.getData(0));
         this.view.quizAnswerA.classList.remove('success');
         this.view.quizAnswerB.classList.remove('success');
@@ -174,7 +236,7 @@ export class Controller {
     quizNext() {
         this.model.next();
         let state = this.model.getState(0);
-        this.view.setCounter(state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        this.view.setCounter(this.view.quizId, this.view.quizFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
         this.view.populateData(this.view.quizData, this.model.getData(0));
         this.view.quizAnswerA.classList.remove('success');
         this.view.quizAnswerB.classList.remove('success');
@@ -186,4 +248,57 @@ export class Controller {
         this.view.quizAnswerD.classList.remove('failure');
     }
 
+    /* LESSON HANDLERS */
+    lessonPlaypause() {
+        let mode = this.model.getCurrentMode();
+
+        if (!this.model.isPlaying()) {
+            this.model.setPlaying(true);
+            this.view.lessonPlaypause.innerHTML = '<i class="fa-sharp fa-solid fa-stop"></i>';
+        } else {
+            this.model.setPlaying(false);
+            this.view.lessonPlaypause.innerHTML = '<i class="fa-sharp fa-solid fa-play">';
+        }
+
+        this.#update();
+    }
+
+    async #speak(text) {
+        var utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        utterance.lang = 'it-IT';
+        utterance.rate = 0.75;
+
+        this.model.addUtterance(utterance);
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    #step() {
+        this.model.loop();
+        let state = this.model.getState(1);
+        this.view.setCounter(this.view.lessonId, this.view.lessonFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        this.view.populateData(this.view.lessonData, this.model.getData(1));
+    }
+
+    #update() {
+        let mode = this.model.getCurrentMode();
+
+        if (this.model.isPlaying()) {
+            let state = this.model.getState(mode);
+            let text = '';
+            for (let i = 0; i < 3; i++) {
+                text += '. Domanda: ' + state.items[state.selectedItem].question + '. Risposta: ' + state.items[state.selectedItem].a_answer;
+            }
+            text = text.substring(2);
+            this.#speak(text);
+            this.model.getUtterance(mode).addEventListener('end', (event) => {
+                this.#step();
+                event.target.removeEventListener('end', this.#step);
+                this.#update();
+            })
+        } else {
+            window.speechSynthesis.cancel(this.model.getUtterance(mode));
+        }
+    }
 }

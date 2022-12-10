@@ -13,6 +13,16 @@ body {
     font-family: "Lucida Console";
 }
 
+#spinner {
+    width: 100vw;
+    height: 100vh;
+}
+
+.spinner-border {
+    width: 25vmin;
+    height: 25vmin;
+}
+
 #carousel {
     width: 100vw;
     height: 100vh;
@@ -151,6 +161,10 @@ body {
     box-shadow: none;
     border-color: white;
     background-color: black;
+}
+
+.playpause {
+    font-size: 4vh;
 }
 
 .success {

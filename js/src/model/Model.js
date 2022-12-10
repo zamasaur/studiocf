@@ -2,19 +2,56 @@ export class Model {
 
 	constructor(jsondata) {
 		this.jsondata = jsondata;
-		this.currentMode = 0; // 0 = quiz, 1 = search, 2 = listen
 		this.state = new Map();
-		this.setFilter('all', 'all', 'all', 'all');
+		// 0 = quiz, 1 = lesson, 2 = search
+		this.getModes().forEach(mode => {
+			if (mode == 0) {
+				this.currentMode = 0;
+			}
+			this.setFilter('all', 'all', 'all', 'all', mode);
+			if (mode == 1) {
+				this.setPlaying(false, mode);
+			}
+		});
 	}
 
-	setFilter(subject, content, subcontent, level) {
+	getModes() {
+		return [0, 1, 2];
+	}
+
+	getCurrentMode() {
+		return this.currentMode;
+	}
+
+	setCurrentMode(mode) {
+		this.currentMode = mode;
+	}
+
+	isPlaying(mode = this.currentMode) {
+		return this.state.get(mode).playing;
+	}
+
+	setPlaying(playing, mode = this.currentMode) {
+		return this.state.get(mode).playing = playing;
+	}
+
+	setFilter(subject, content, subcontent, level, mode = this.currentMode) {
 		content = subject == 'all' ? 'all' : content;
 		subcontent = content == 'all' ? 'all' : subcontent;
-		this.state.set(this.currentMode, {
+
+		this.state.set(mode, {
 			filter: { subject: subject, content: content, subcontent: subcontent, level: level },
 			items: this.shuffleArray(this.#fetchItems(subject, content, subcontent, level)),
 			selectedItem: 0,
 		});
+	}
+
+	addUtterance(utterance, mode = this.currentMode) {
+		this.state.get(mode).utterance = utterance;
+	}
+
+	getUtterance(mode = this.currentMode) {
+		return this.state.get(mode).utterance;
 	}
 
 	prev() {
@@ -31,11 +68,16 @@ export class Model {
 		}
 	}
 
+	loop() {
+		let state = this.state.get(this.currentMode);
+		this.state.get(this.currentMode).selectedItem = (this.state.get(this.currentMode).selectedItem + 1) % state.items.length;
+	}
+
 	getState(mode) {
 		return JSON.parse(JSON.stringify(this.state.get(mode)));
 	}
 
-	getSubjects() {
+	getSubjects(mode = this.currentMode) {
 		let items = this.jsondata;
 		let set = new Set();
 
@@ -46,8 +88,8 @@ export class Model {
 		return Array.from(set);
 	}
 
-	getContents() {
-		let state = this.state.get(this.currentMode);
+	getContents(mode = this.currentMode) {
+		let state = this.state.get(mode);
 		let items = this.jsondata;
 		let set = new Set();
 
@@ -60,8 +102,8 @@ export class Model {
 		return Array.from(set);
 	}
 
-	getSubcontents() {
-		let state = this.state.get(this.currentMode);
+	getSubcontents(mode = this.currentMode) {
+		let state = this.state.get(mode);
 		let items = this.jsondata;
 		let set = new Set();
 
@@ -74,8 +116,8 @@ export class Model {
 		return Array.from(set);
 	}
 
-	getLevels() {
-		let state = this.state.get(this.currentMode);
+	getLevels(mode = this.currentMode) {
+		let state = this.state.get(mode);
 		let items = this.jsondata;
 		let set = new Set();
 
