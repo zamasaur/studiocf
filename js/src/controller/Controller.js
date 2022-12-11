@@ -4,6 +4,25 @@ export class Controller {
         this.model = model;
         this.view = view;
 
+        this.worker = new Worker('./js/worker.js');
+
+        this.worker.addEventListener('message', event => {
+            let mode = 2;
+            let jsondata = event.data.map((item) => { return item.item });
+
+            if (jsondata.length > 0) {
+                this.model.setState(jsondata, mode);
+                let state = this.model.getState();
+                this.view.setCounter(this.view.searchId, this.view.searchFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+                this.view.populateData(this.view.searchData, this.model.getData());
+            } else {
+                this.model.resetState(mode);
+                let state = this.model.getState(mode);
+                this.view.setCounter(this.view.searchId, this.view.searchFraction, 'none', state.selectedItem, state.items.length);
+                this.view.populateData(this.view.searchData, ['', '']);
+            }
+        });
+
         this.view.carousel.addEventListener('slide.bs.carousel', (event) => {
             switch (event.relatedTarget.id) {
                 case 'quiz':
@@ -22,6 +41,7 @@ export class Controller {
 
         this.initQuiz();
         this.initLesson();
+        this.initSearch();
 
     }
 
@@ -76,6 +96,16 @@ export class Controller {
         this.view.setAnswer(this.view.lessonAnswerB, false);
         this.view.setAnswer(this.view.lessonAnswerC, false);
         this.view.setAnswer(this.view.lessonAnswerD, false);
+    }
+
+    initSearch() {
+        let mode = 2;
+        let state = this.model.getState(mode);
+        this.view.setCounter(this.view.searchId, this.view.searchFraction, 'none', state.selectedItem, state.items.length);
+
+        this.view.bindSearchSearch(this.searchSearch.bind(this));
+        this.view.bindSearchPrev(this.searchPrev.bind(this));
+        this.view.bindSearchNext(this.searchNext.bind(this));
     }
 
     run() {
@@ -183,7 +213,7 @@ export class Controller {
 
     /* QUIZ HANDLERS */
     quizAnswerA() {
-        let state = this.model.getState(0);
+        let state = this.model.getState();
         if (this.view.quizAnswerA.innerText == state.items[state.selectedItem].a_answer) {
             this.view.setAnswer(this.view.quizAnswerA, true);
         } else {
@@ -192,7 +222,7 @@ export class Controller {
     }
 
     quizAnswerB() {
-        let state = this.model.getState(0);
+        let state = this.model.getState();
         if (this.view.quizAnswerB.innerText == state.items[state.selectedItem].a_answer) {
             this.view.setAnswer(this.view.quizAnswerB, true);
         } else {
@@ -201,7 +231,7 @@ export class Controller {
     }
 
     quizAnswerC() {
-        let state = this.model.getState(0);
+        let state = this.model.getState();
         if (this.view.quizAnswerC.innerText == state.items[state.selectedItem].a_answer) {
             this.view.setAnswer(this.view.quizAnswerC, true);
         } else {
@@ -210,7 +240,7 @@ export class Controller {
     }
 
     quizAnswerD() {
-        let state = this.model.getState(0);
+        let state = this.model.getState();
         if (this.view.quizAnswerD.innerText == state.items[state.selectedItem].a_answer) {
             this.view.setAnswer(this.view.quizAnswerD, true);
         } else {
@@ -220,9 +250,9 @@ export class Controller {
 
     quizPrev() {
         this.model.prev();
-        let state = this.model.getState(0);
+        let state = this.model.getState();
         this.view.setCounter(this.view.quizId, this.view.quizFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
-        this.view.populateData(this.view.quizData, this.model.getData(0));
+        this.view.populateData(this.view.quizData, this.model.getData());
         this.view.quizAnswerA.classList.remove('success');
         this.view.quizAnswerB.classList.remove('success');
         this.view.quizAnswerC.classList.remove('success');
@@ -235,9 +265,9 @@ export class Controller {
 
     quizNext() {
         this.model.next();
-        let state = this.model.getState(0);
+        let state = this.model.getState();
         this.view.setCounter(this.view.quizId, this.view.quizFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
-        this.view.populateData(this.view.quizData, this.model.getData(0));
+        this.view.populateData(this.view.quizData, this.model.getData());
         this.view.quizAnswerA.classList.remove('success');
         this.view.quizAnswerB.classList.remove('success');
         this.view.quizAnswerC.classList.remove('success');
@@ -250,7 +280,6 @@ export class Controller {
 
     /* LESSON HANDLERS */
     lessonPlaypause() {
-        let mode = this.model.getCurrentMode();
 
         if (!this.model.isPlaying()) {
             this.model.setPlaying(true);
@@ -275,14 +304,16 @@ export class Controller {
     }
 
     #step() {
+        let mode = 1;
+
         this.model.loop();
-        let state = this.model.getState(1);
+        let state = this.model.getState(mode);
         this.view.setCounter(this.view.lessonId, this.view.lessonFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
-        this.view.populateData(this.view.lessonData, this.model.getData(1));
+        this.view.populateData(this.view.lessonData, this.model.getData(mode));
     }
 
     #update() {
-        let mode = this.model.getCurrentMode();
+        let mode = 1;
 
         if (this.model.isPlaying()) {
             let state = this.model.getState(mode);
@@ -300,5 +331,36 @@ export class Controller {
         } else {
             window.speechSynthesis.cancel(this.model.getUtterance(mode));
         }
+    }
+
+    /*SEARCH HANDLERS*/
+    searchSearch(event) {
+        var code = (event.keyCode ? event.keyCode : e.which);
+        console.log(code);
+        if (code == 13) {
+            event.preventDefault();
+            this.#doSearch();
+        }
+    }
+
+    searchPrev() {
+        this.model.prev();
+        let state = this.model.getState();
+        if (state.selectedItem >= 0) {
+            this.view.setCounter(this.view.searchId, this.view.searchFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+            this.view.populateData(this.view.searchData, this.model.getData());
+        }
+    }
+
+    searchNext() {
+        this.model.next();
+        let state = this.model.getState();
+        this.view.setCounter(this.view.searchId, this.view.searchFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        this.view.populateData(this.view.searchData, this.model.getData());
+    }
+
+    async #doSearch() {
+        this.view.searchFraction.innerText = 'Loading...'
+        this.worker.postMessage(this.view.searchSearch.value);
     }
 }

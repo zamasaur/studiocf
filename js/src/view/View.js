@@ -39,6 +39,18 @@ export class View {
 
 		this.lessonPlaypause = document.querySelector('#lesson .playpause');
 
+		/*SEARCH*/
+		this.searchSearch = document.querySelector('#search .search');
+
+		this.searchId = document.querySelector('#search .id');
+		this.searchFraction = document.querySelector('#search .fraction');
+
+		this.searchData = document.querySelectorAll('#search .data>*');
+		this.searchAnswer = document.querySelector('#search .a_answer');
+
+		this.searchPrev = document.querySelector('#search .prev');
+		this.searchNext = document.querySelector('#search .next');
+
 	}
 
 	setLoaded() {
@@ -106,34 +118,6 @@ export class View {
 		});
 	}
 
-	bindQuizSubject(handler) {
-		this.quizSubject.addEventListener('change', event => {
-			event.preventDefault();
-			handler();
-		});
-	}
-
-	bindQuizContent(handler) {
-		this.quizContent.addEventListener('change', event => {
-			event.preventDefault();
-			handler();
-		});
-	}
-
-	bindQuizSubcontent(handler) {
-		this.quizSubcontent.addEventListener('change', event => {
-			event.preventDefault();
-			handler();
-		});
-	}
-
-	bindQuizLevel(handler) {
-		this.quizLevel.addEventListener('change', event => {
-			event.preventDefault();
-			handler();
-		});
-	}
-
 	bindQuizAnswerA(handler) {
 		this.quizAnswerA.addEventListener('click', event => {
 			event.preventDefault();
@@ -183,4 +167,23 @@ export class View {
 		});
 	}
 
+	bindSearchSearch(handler) {
+		this.searchSearch.addEventListener('keypress', event => {
+			handler(event);
+		});
+	}
+
+	bindSearchPrev(handler) {
+		this.searchPrev.addEventListener('click', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindSearchNext(handler) {
+		this.searchNext.addEventListener('click', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
 }

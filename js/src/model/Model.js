@@ -8,10 +8,7 @@ export class Model {
 			if (mode == 0) {
 				this.currentMode = 0;
 			}
-			this.setFilter('all', 'all', 'all', 'all', mode);
-			if (mode == 1) {
-				this.setPlaying(false, mode);
-			}
+			this.resetState(mode);
 		});
 	}
 
@@ -35,13 +32,19 @@ export class Model {
 		return this.state.get(mode).playing = playing;
 	}
 
+	setSelectedItem(selectedItem, mode = this.currentMode) {
+		return this.state.get(mode).selectedItem = selectedItem;
+	}
+
 	setFilter(subject, content, subcontent, level, mode = this.currentMode) {
 		content = subject == 'all' ? 'all' : content;
 		subcontent = content == 'all' ? 'all' : subcontent;
 
+		let items = mode == 2 ? this.#fetchItems(subject, content, subcontent, level) : this.shuffleArray(this.#fetchItems(subject, content, subcontent, level));
+
 		this.state.set(mode, {
 			filter: { subject: subject, content: content, subcontent: subcontent, level: level },
-			items: this.shuffleArray(this.#fetchItems(subject, content, subcontent, level)),
+			items: items,
 			selectedItem: 0,
 		});
 	}
@@ -73,8 +76,26 @@ export class Model {
 		this.state.get(this.currentMode).selectedItem = (this.state.get(this.currentMode).selectedItem + 1) % state.items.length;
 	}
 
-	getState(mode) {
+	getState(mode = this.currentMode) {
 		return JSON.parse(JSON.stringify(this.state.get(mode)));
+	}
+
+	setState(items, mode = this.currentMode) {
+		this.state.set(mode, {
+			filter: this.state.get(mode).filter,
+			items: items,
+			selectedItem: 0,
+		});
+	}
+
+	resetState(mode = this.currentMode) {
+		this.setFilter('all', 'all', 'all', 'all', mode);
+		if (mode == 1) {
+			this.setPlaying(false, mode);
+		}
+		if (mode == 2) {
+			this.setSelectedItem(-1, mode);
+		}
 	}
 
 	getSubjects(mode = this.currentMode) {
@@ -133,7 +154,7 @@ export class Model {
 		return Array.from(set);
 	}
 
-	getData(mode) {
+	getData(mode = this.currentMode) {
 		let state = this.state.get(mode);
 
 		if (state.items.length == 0) {

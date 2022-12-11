@@ -182,6 +182,12 @@ body {
     background-color: red;
 }
 
+#search .search {
+    outline: none;
+    box-shadow: none;
+    border-width: 0.5vmin;
+}
+
 #search .question {
     height: 35vh;
     background-color: black;
