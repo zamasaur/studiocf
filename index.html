@@ -58,13 +58,13 @@
                             <div class="d_answer">Loading...</div>
                         </div>
                         <div class="d-flex commandbar">
-                            <button type="button" class="btn btn-primary w-50 prev">Precedente</button>
-                            <button type="button" class="btn btn-primary w-50 next">Successiva</button>
+                            <button type="button" class="btn btn-primary w-50 prev"><i class="fa-sharp fa-solid fa-backward-step"></i></button>
+                            <button type="button" class="btn btn-primary w-50 next"><i class="fa-sharp fa-solid fa-forward-step"></i></button>
                         </div>
                     </div>
                 </div>
                 <div id="lesson" class="carousel-item">
-                    <div class="d-flex title">LEZIONE</div>
+                    <div class="d-flex title">LESSON</div>
                     <div class="d-flex-column main">
                         <div class="d-flex toolbar">
                             <select class="form-select subject">
@@ -92,13 +92,30 @@
                             <div class="d_answer">Loading...</div>
                         </div>
                         <div class="d-flex justify-content-center commandbar">
-                            <button type="button" class="btn btn-primary w-100 playpause"><i class="fa-sharp fa-solid fa-play"></i></button>
+                            <button type="button" class="btn btn-primary w-100 playpause"><i
+                                    class="fa-sharp fa-solid fa-play"></i></button>
                         </div>
                     </div>
                 </div>
-                <div class="carousel-item">
-                    <div class="d-flex title">RICERCA</div>
-                    <div class="d-flex main">...work in progress...</div>
+                <div id="search" class="carousel-item">
+                    <div class="d-flex title">SEARCH</div>
+                    <div class="d-flex-column main">
+                        <div class="d-flex toolbar">
+                            <textarea spellcheck="false" placeholder="Search..."></textarea>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center counter">
+                            <div>id:</span><span class="id">Loading...</span></div>
+                            <div><span class="fraction">Loading...</span></div>
+                        </div>
+                        <div class="d-flex-column data">
+                            <textarea class="question" disabled placeholder="Question..."></textarea>
+                            <textarea class="answer" disabled placeholder="Answer..."></textarea>
+                        </div>
+                        <div class="d-flex commandbar">
+                            <button type="button" class="btn btn-primary w-50 prev"><i class="fa-sharp fa-solid fa-backward-step"></i></button>
+                            <button type="button" class="btn btn-primary w-50 next"><i class="fa-sharp fa-solid fa-forward-step"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
