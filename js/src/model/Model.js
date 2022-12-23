@@ -66,7 +66,7 @@ export class Model {
 
 	next() {
 		let state = this.state.get(this.currentMode);
-		if (state.selectedItem < state.items.length) {
+		if (state.selectedItem + 1 < state.items.length) {
 			this.state.get(this.currentMode).selectedItem++;
 		}
 	}

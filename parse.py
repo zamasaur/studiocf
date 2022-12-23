@@ -70,6 +70,11 @@ def getNormalizedTxt(file):
     subst = "Domanda: "
     text = re.sub(regex, subst, text, 0, re.MULTILINE)
 
+    # remove garbage
+    regex = r"(?<=(^Domanda: ))((finanziaria e finanza comportamentale) [0-9]* {1,1})"
+    subst = ""
+    text = re.sub(regex, subst, text, 0, re.MULTILINE)
+
     return text
 
 
