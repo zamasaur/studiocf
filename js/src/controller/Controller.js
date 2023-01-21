@@ -361,6 +361,20 @@ export class Controller {
 
     async #doSearch() {
         this.view.searchFraction.innerText = 'Loading...'
-        this.worker.postMessage(this.view.searchSearch.value);
+
+        let firstChar = Array.from(this.view.searchSearch.value)[0];
+        let number = parseInt(this.view.searchSearch.value.slice(1));
+
+        this.model.resetState();
+
+        if (firstChar == '#' && !isNaN(number) && number >= 0 && number <= this.model.getState().items.length - 1) {
+            this.model.setSelectedItem(number);
+            let state = this.model.getState();
+            this.view.setCounter(this.view.searchId, this.view.searchFraction, number, state.selectedItem, state.items.length);
+            let data = this.model.getData();
+            this.view.populateData(this.view.searchData, [data[0], data[1]]);
+        } else {
+            this.worker.postMessage(this.view.searchSearch.value);
+        }
     }
 }
