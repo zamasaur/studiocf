@@ -198,6 +198,10 @@ body {
     background-color: black;
 }
 
+#study textarea {
+    width: 20vw;
+}
+
 @media only screen and (orientation:landscape) {
 
     #search .data {
