@@ -34,7 +34,7 @@ export class Controller {
                 case 'search':
                     this.model.setCurrentMode(2);
                     break;
-                case 'review':
+                case 'study':
                     this.model.setCurrentMode(3);
                     break;
                 default:
@@ -45,7 +45,7 @@ export class Controller {
         this.initQuiz();
         this.initLesson();
         this.initSearch();
-        this.initReview();
+        this.initStudy();
 
     }
 
@@ -112,28 +112,28 @@ export class Controller {
         this.view.bindSearchNext(this.searchNext.bind(this));
     }
 
-    initReview() {
-        this.view.populateSelect(this.view.reviewSubject, this.model.getSubjects());
-        this.view.populateSelect(this.view.reviewContent, this.model.getContents());
-        this.view.populateSelect(this.view.reviewSubcontent, this.model.getSubcontents());
-        this.view.populateSelect(this.view.reviewLevel, this.model.getLevels());
+    initStudy() {
+        this.view.populateSelect(this.view.studySubject, this.model.getSubjects());
+        this.view.populateSelect(this.view.studyContent, this.model.getContents());
+        this.view.populateSelect(this.view.studySubcontent, this.model.getSubcontents());
+        this.view.populateSelect(this.view.studyLevel, this.model.getLevels());
 
         let mode = 3;
         let state = this.model.getState(mode);
-        this.view.setCounter(this.view.reviewId, this.view.reviewFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        this.view.setCounter(this.view.studyId, this.view.studyFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
 
-        this.view.populateData(this.view.reviewData, this.model.getData(mode));
+        this.view.populateData(this.view.studyData, this.model.getData(mode));
 
-        const selects = [this.view.reviewSubject, this.view.reviewContent, this.view.reviewSubcontent, this.view.reviewLevel];
+        const selects = [this.view.studySubject, this.view.studyContent, this.view.studySubcontent, this.view.studyLevel];
         this.view.bindSubject(selects, this.handleSubject.bind(this));
         this.view.bindContent(selects, this.handleContent.bind(this));
         this.view.bindSubcontent(selects, this.handleSubcontent.bind(this));
         this.view.bindLevel(selects, this.handleLevel.bind(this));
 
-        this.view.bindReviewSearch(this.reviewSearch.bind(this));
-        this.view.bindReviewTest(this.reviewTest.bind(this));
-        this.view.bindReviewPrev(this.reviewPrev.bind(this));
-        this.view.bindReviewNext(this.reviewNext.bind(this));
+        this.view.bindStudySearch(this.studySearch.bind(this));
+        this.view.bindStudyTest(this.studyTest.bind(this));
+        this.view.bindStudyPrev(this.studyPrev.bind(this));
+        this.view.bindStudyNext(this.studyNext.bind(this));
     }
 
     run() {
@@ -161,8 +161,8 @@ export class Controller {
         } else if (mode == 1) {
             data = this.view.lessonData;
         } else {
-            data = this.view.reviewData;
-            this.view.reviewSearch.value = "";
+            data = this.view.studyData;
+            this.view.studySearch.value = "";
         }
         this.view.populateData(data, this.model.getData(mode));
 
@@ -180,8 +180,8 @@ export class Controller {
             elementId = this.view.lessonId;
             elementFraction = this.view.lessonFraction;
         } else {
-            elementId = this.view.reviewId;
-            elementFraction = this.view.reviewFraction;
+            elementId = this.view.studyId;
+            elementFraction = this.view.studyFraction;
         }
         this.view.setCounter(elementId, elementFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
 
@@ -207,8 +207,8 @@ export class Controller {
         } else if (mode == 1) {
             data = this.view.lessonData;
         } else {
-            data = this.view.reviewData;
-            this.view.reviewSearch.value = "";
+            data = this.view.studyData;
+            this.view.studySearch.value = "";
         }
         this.view.populateData(data, this.model.getData(mode));
 
@@ -225,8 +225,8 @@ export class Controller {
             elementId = this.view.lessonId;
             elementFraction = this.view.lessonFraction;
         } else {
-            elementId = this.view.reviewId;
-            elementFraction = this.view.reviewFraction;
+            elementId = this.view.studyId;
+            elementFraction = this.view.studyFraction;
         }
         this.view.setCounter(elementId, elementFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
 
@@ -252,8 +252,8 @@ export class Controller {
         } else if (mode == 1) {
             data = this.view.lessonData;
         } else {
-            data = this.view.reviewData;
-            this.view.reviewSearch.value = "";
+            data = this.view.studyData;
+            this.view.studySearch.value = "";
         }
         this.view.populateData(data, this.model.getData(mode));
 
@@ -269,8 +269,8 @@ export class Controller {
             elementId = this.view.lessonId;
             elementFraction = this.view.lessonFraction;
         } else {
-            elementId = this.view.reviewId;
-            elementFraction = this.view.reviewFraction;
+            elementId = this.view.studyId;
+            elementFraction = this.view.studyFraction;
         }
         this.view.setCounter(elementId, elementFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
 
@@ -296,8 +296,8 @@ export class Controller {
         } else if (mode == 1) {
             data = this.view.lessonData;
         } else {
-            data = this.view.reviewData;
-            this.view.reviewSearch.value = "";
+            data = this.view.studyData;
+            this.view.studySearch.value = "";
         }
         this.view.populateData(data, this.model.getData(mode));
 
@@ -311,8 +311,8 @@ export class Controller {
             elementId = this.view.lessonId;
             elementFraction = this.view.lessonFraction;
         } else {
-            elementId = this.view.reviewId;
-            elementFraction = this.view.reviewFraction;
+            elementId = this.view.studyId;
+            elementFraction = this.view.studyFraction;
         }
         this.view.setCounter(elementId, elementFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
 
@@ -339,14 +339,14 @@ export class Controller {
             this.view.lessonAnswerC.classList.remove('failure');
             this.view.lessonAnswerD.classList.remove('failure');
         } else {
-            this.view.reviewAnswerA.classList.remove('success');
-            this.view.reviewAnswerB.classList.remove('success');
-            this.view.reviewAnswerC.classList.remove('success');
-            this.view.reviewAnswerD.classList.remove('success');
-            this.view.reviewAnswerA.classList.remove('failure');
-            this.view.reviewAnswerB.classList.remove('failure');
-            this.view.reviewAnswerC.classList.remove('failure');
-            this.view.reviewAnswerD.classList.remove('failure');
+            this.view.studyAnswerA.classList.remove('success');
+            this.view.studyAnswerB.classList.remove('success');
+            this.view.studyAnswerC.classList.remove('success');
+            this.view.studyAnswerD.classList.remove('success');
+            this.view.studyAnswerA.classList.remove('failure');
+            this.view.studyAnswerB.classList.remove('failure');
+            this.view.studyAnswerC.classList.remove('failure');
+            this.view.studyAnswerD.classList.remove('failure');
         }
     }
 
@@ -503,8 +503,8 @@ export class Controller {
         }
     }
 
-    /*REVIEW HANDLERS*/
-    reviewSearch(event) {
+    /*STUDY HANDLERS*/
+    studySearch(event) {
         var code = (event.keyCode ? event.keyCode : e.which);
         console.log(code);
         if (code == 13) {
@@ -513,41 +513,41 @@ export class Controller {
         }
     }
 
-    reviewTest() {
+    studyTest() {
         let state = this.model.getState();
-        this.view.reviewData.forEach(element => {
+        this.view.studyData.forEach(element => {
             if (element.innerText == state.items[state.selectedItem].a_answer) {
                 this.view.setAnswer(element, true);
             }
         });
     }
 
-    reviewPrev() {
+    studyPrev() {
         this.model.prev();
         let state = this.model.getState();
         if (state.selectedItem >= 0) {
-            this.view.setCounter(this.view.reviewId, this.view.reviewFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
-            this.view.populateData(this.view.reviewData, this.model.getData());
+            this.view.setCounter(this.view.studyId, this.view.studyFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+            this.view.populateData(this.view.studyData, this.model.getData());
             this.resetAnswerColor(this.model.getCurrentMode());
         }
     }
 
-    reviewNext() {
+    studyNext() {
         this.model.next();
         let state = this.model.getState();
-        this.view.setCounter(this.view.reviewId, this.view.reviewFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
-        this.view.populateData(this.view.reviewData, this.model.getData());
+        this.view.setCounter(this.view.studyId, this.view.studyFraction, state.items[state.selectedItem].metadata.id, state.selectedItem, state.items.length);
+        this.view.populateData(this.view.studyData, this.model.getData());
         this.resetAnswerColor(this.model.getCurrentMode());
     }
 
     async #doPeek() {
-        let firstChar = Array.from(this.view.reviewSearch.value)[0];
-        let number = parseInt(this.view.reviewSearch.value.slice(1));
+        let firstChar = Array.from(this.view.studySearch.value)[0];
+        let number = parseInt(this.view.studySearch.value.slice(1));
 
         this.model.resetState();
 
         if (firstChar == '#' && !isNaN(number) && number >= 0 && number <= this.model.getState().items.length - 1) {
-            const selects = [this.view.reviewSubject, this.view.reviewContent, this.view.reviewSubcontent, this.view.reviewLevel];
+            const selects = [this.view.studySubject, this.view.studyContent, this.view.studySubcontent, this.view.studyLevel];
             this.view.populateSelect(selects[0], this.model.getSubjects());
             this.view.populateSelect(selects[1], this.model.getContents());
             this.view.populateSelect(selects[2], this.model.getSubcontents());
@@ -557,9 +557,9 @@ export class Controller {
 
             this.model.setSelectedItem(number);
             let state = this.model.getState();
-            this.view.setCounter(this.view.reviewId, this.view.reviewFraction, number, state.selectedItem, state.items.length);
+            this.view.setCounter(this.view.studyId, this.view.studyFraction, number, state.selectedItem, state.items.length);
             let data = this.model.getData();
-            this.view.populateData(this.view.reviewData, [data[0], data[1], data[2], data[3], data[4]]);
+            this.view.populateData(this.view.studyData, [data[0], data[1], data[2], data[3], data[4]]);
         }
     }
 }

@@ -51,26 +51,26 @@ export class View {
 		this.searchPrev = document.querySelector('#search .prev');
 		this.searchNext = document.querySelector('#search .next');
 
-		/*REVIEW*/
-		this.reviewSearch = document.querySelector('#review .search');
+		/*STUDY*/
+		this.studySearch = document.querySelector('#study .search');
 
-		this.reviewSubject = document.querySelector('#review .subject');
-		this.reviewContent = document.querySelector('#review .content');
-		this.reviewSubcontent = document.querySelector('#review .subcontent');
-		this.reviewLevel = document.querySelector('#review .level');
+		this.studySubject = document.querySelector('#study .subject');
+		this.studyContent = document.querySelector('#study .content');
+		this.studySubcontent = document.querySelector('#study .subcontent');
+		this.studyLevel = document.querySelector('#study .level');
 
-		this.reviewId = document.querySelector('#review .id');
-		this.reviewFraction = document.querySelector('#review .fraction');
+		this.studyId = document.querySelector('#study .id');
+		this.studyFraction = document.querySelector('#study .fraction');
 
-		this.reviewData = document.querySelectorAll('#review .data>*');
-		this.reviewTest = document.querySelector('#review .data');
-		this.reviewAnswerA = document.querySelector('#review .a_answer');
-		this.reviewAnswerB = document.querySelector('#review .b_answer');
-		this.reviewAnswerC = document.querySelector('#review .c_answer');
-		this.reviewAnswerD = document.querySelector('#review .d_answer');
+		this.studyData = document.querySelectorAll('#study .data>*');
+		this.studyTest = document.querySelector('#study .data');
+		this.studyAnswerA = document.querySelector('#study .a_answer');
+		this.studyAnswerB = document.querySelector('#study .b_answer');
+		this.studyAnswerC = document.querySelector('#study .c_answer');
+		this.studyAnswerD = document.querySelector('#study .d_answer');
 
-		this.reviewPrev = document.querySelector('#review .prev');
-		this.reviewNext = document.querySelector('#review .next');
+		this.studyPrev = document.querySelector('#study .prev');
+		this.studyNext = document.querySelector('#study .next');
 
 	}
 
@@ -208,28 +208,28 @@ export class View {
 		});
 	}
 
-	bindReviewSearch(handler) {
-		this.reviewSearch.addEventListener('keypress', event => {
+	bindStudySearch(handler) {
+		this.studySearch.addEventListener('keypress', event => {
 			handler(event);
 		});
 	}
 
-	bindReviewTest(handler) {
-		this.reviewTest.addEventListener('click', event => {
+	bindStudyTest(handler) {
+		this.studyTest.addEventListener('click', event => {
 			event.preventDefault();
 			handler();
 		});
 	}
 
-	bindReviewPrev(handler) {
-		this.reviewPrev.addEventListener('click', event => {
+	bindStudyPrev(handler) {
+		this.studyPrev.addEventListener('click', event => {
 			event.preventDefault();
 			handler();
 		});
 	}
 
-	bindReviewNext(handler) {
-		this.reviewNext.addEventListener('click', event => {
+	bindStudyNext(handler) {
+		this.studyNext.addEventListener('click', event => {
 			event.preventDefault();
 			handler();
 		});
