@@ -13,7 +13,7 @@ export class Model {
 	}
 
 	getModes() {
-		return [0, 1, 2];
+		return [0, 1, 2, 3];
 	}
 
 	getCurrentMode() {
@@ -163,7 +163,7 @@ export class Model {
 
 		let data = state.items[state.selectedItem];
 
-		if (mode == 0) {
+		if (mode == 0 || mode == 3) {
 			return [data.question].concat(this.shuffleArray([data.a_answer, data.b_answer, data.c_answer, data.d_answer]));
 		}
 		return [data.question, data.a_answer, data.b_answer, data.c_answer, data.d_answer];

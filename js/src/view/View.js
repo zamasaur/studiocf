@@ -51,6 +51,27 @@ export class View {
 		this.searchPrev = document.querySelector('#search .prev');
 		this.searchNext = document.querySelector('#search .next');
 
+		/*REVIEW*/
+		this.reviewSearch = document.querySelector('#review .search');
+
+		this.reviewSubject = document.querySelector('#review .subject');
+		this.reviewContent = document.querySelector('#review .content');
+		this.reviewSubcontent = document.querySelector('#review .subcontent');
+		this.reviewLevel = document.querySelector('#review .level');
+
+		this.reviewId = document.querySelector('#review .id');
+		this.reviewFraction = document.querySelector('#review .fraction');
+
+		this.reviewData = document.querySelectorAll('#review .data>*');
+		this.reviewTest = document.querySelector('#review .data');
+		this.reviewAnswerA = document.querySelector('#review .a_answer');
+		this.reviewAnswerB = document.querySelector('#review .b_answer');
+		this.reviewAnswerC = document.querySelector('#review .c_answer');
+		this.reviewAnswerD = document.querySelector('#review .d_answer');
+
+		this.reviewPrev = document.querySelector('#review .prev');
+		this.reviewNext = document.querySelector('#review .next');
+
 	}
 
 	setLoaded() {
@@ -182,6 +203,33 @@ export class View {
 
 	bindSearchNext(handler) {
 		this.searchNext.addEventListener('click', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindReviewSearch(handler) {
+		this.reviewSearch.addEventListener('keypress', event => {
+			handler(event);
+		});
+	}
+
+	bindReviewTest(handler) {
+		this.reviewTest.addEventListener('click', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindReviewPrev(handler) {
+		this.reviewPrev.addEventListener('click', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindReviewNext(handler) {
+		this.reviewNext.addEventListener('click', event => {
 			event.preventDefault();
 			handler();
 		});
