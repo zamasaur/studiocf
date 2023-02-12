@@ -199,7 +199,8 @@ body {
 }
 
 #study textarea {
-    width: 20vw;
+    min-width: 20vw;
+    max-width: 20vw;
 }
 
 @media only screen and (orientation:landscape) {
