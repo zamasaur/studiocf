@@ -40,7 +40,7 @@ export class Model {
 		content = subject == 'all' ? 'all' : content;
 		subcontent = content == 'all' ? 'all' : subcontent;
 
-		let items = mode == 2 ? this.#fetchItems(subject, content, subcontent, level) : this.shuffleArray(this.#fetchItems(subject, content, subcontent, level));
+		let items = mode == 2 || mode == 3 ? this.#fetchItems(subject, content, subcontent, level) : this.shuffleArray(this.#fetchItems(subject, content, subcontent, level));
 
 		this.state.set(mode, {
 			filter: { subject: subject, content: content, subcontent: subcontent, level: level },
