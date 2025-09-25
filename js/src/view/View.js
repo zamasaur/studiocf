@@ -72,6 +72,23 @@ export class View {
 		this.studyPrev = document.querySelector('#study .prev');
 		this.studyNext = document.querySelector('#study .next');
 
+		/* MULTIQUIZ */
+		this.multiQuizSubject = document.querySelector('#multiQuiz .subject');
+		this.multiQuizContent = document.querySelector('#multiQuiz .content');
+		this.multiQuizSubcontent = document.querySelector('#multiQuiz .subcontent');
+		this.multiQuizLevel = document.querySelector('#multiQuiz .level');
+
+		this.multiQuizId = document.querySelector('#multiQuiz .id');
+		this.multiQuizFraction = document.querySelector('#multiQuiz .fraction');
+
+		this.multiQuizData = document.querySelectorAll('#multiQuiz .data>*');
+		this.multiQuizAnswerA = document.querySelector('#multiQuiz .a_answer');
+		this.multiQuizAnswerB = document.querySelector('#multiQuiz .b_answer');
+		this.multiQuizAnswerC = document.querySelector('#multiQuiz .c_answer');
+		this.multiQuizAnswerD = document.querySelector('#multiQuiz .d_answer');
+
+		this.multiQuizPrev = document.querySelector('#multiQuiz .prev');
+		this.multiQuizNext = document.querySelector('#multiQuiz .next');
 	}
 
 	setLoaded() {
@@ -109,6 +126,30 @@ export class View {
 
 	setAnswer(quizAnswer, isSuccess) {
 		quizAnswer.classList.add(isSuccess ? 'success' : 'failure');
+	}
+
+	populateMultiSelect(select, options) {
+		Array.from(select.getElementsByTagName("option")).forEach(o => o.remove());
+
+		options.forEach(option => {
+			let element = document.createElement("option");
+			element.textContent = option;
+			element.value = option;
+			select.appendChild(element);
+		});
+
+		select.selectedIndex = -1;
+	}
+
+	populateDataMultiQuiz(data) {
+		for (let i = 0; i < this.multiQuizData.length; i++) {
+			this.multiQuizData[i].innerText = data[i] || '';
+		}
+	}
+
+	setCounterMultiQuiz(id, fraction, currentId, selectedIndex, total) {
+		id.innerText = currentId || 'none';
+		fraction.innerText = (selectedIndex + 1) + '/' + total;
 	}
 
 	bindSubject(selects, handler) {
@@ -232,6 +273,46 @@ export class View {
 		this.studyNext.addEventListener('click', event => {
 			event.preventDefault();
 			handler();
+		});
+	}
+
+	bindMultiQuizAnswerA(handler) {
+		this.multiQuizAnswerA.addEventListener('click', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindMultiQuizAnswerB(handler) {
+		this.multiQuizAnswerB.addEventListener('click', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindMultiQuizAnswerC(handler) {
+		this.multiQuizAnswerC.addEventListener('click', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindMultiQuizAnswerD(handler) {
+		this.multiQuizAnswerD.addEventListener('click', event => {
+			event.preventDefault();
+			handler();
+		});
+	}
+
+	bindMultiQuizPrev(handler) {
+		this.multiQuizPrev.addEventListener('click', event => {
+			event.preventDefault(); handler();
+		});
+	}
+
+	bindMultiQuizNext(handler) {
+		this.multiQuizNext.addEventListener('click', event => {
+			event.preventDefault(); handler();
 		});
 	}
 }

@@ -13,7 +13,7 @@ export class Model {
 	}
 
 	getModes() {
-		return [0, 1, 2, 3];
+		return [0, 1, 2, 3, 4];
 	}
 
 	getCurrentMode() {
@@ -163,7 +163,7 @@ export class Model {
 
 		let data = state.items[state.selectedItem];
 
-		if (mode == 0 || mode == 3) {
+		if (mode == 0 || mode == 3 || mode == 4) {
 			return [data.question].concat(this.shuffleArray([data.a_answer, data.b_answer, data.c_answer, data.d_answer]));
 		}
 		return [data.question, data.a_answer, data.b_answer, data.c_answer, data.d_answer];
@@ -186,6 +186,69 @@ export class Model {
 				(content == 'all' || item.metadata.content == content) &&
 				(subcontent == 'all' || item.metadata.subcontent == subcontent) &&
 				(level == 'all' || item.metadata.level == level);
+		});
+	}
+
+	getContentsForSubjects(subjects) {
+		let items = this.jsondata;
+		let set = new Set();
+
+		items.forEach(item => {
+			if (subjects.length === 0 || subjects.includes(item.metadata.subject)) {
+				set.add(item.metadata.content);
+			}
+		});
+
+		return Array.from(set);
+	}
+
+	getSubcontentsForSubjectsAndContents(subjects, contents) {
+		let items = this.jsondata;
+		let set = new Set();
+
+		items.forEach(item => {
+			if ((subjects.length === 0 || subjects.includes(item.metadata.subject)) &&
+				(contents.length === 0 || contents.includes(item.metadata.content))) {
+				set.add(item.metadata.subcontent);
+			}
+		});
+
+		return Array.from(set);
+	}
+
+	setFilterMultiQuiz(subjects, contents, subcontents, levels) {
+		const toStringArray = arr => arr.map(x => String(x));
+
+		const subjectsStr = toStringArray(subjects);
+		const contentsStr = toStringArray(contents);
+		const subcontentsStr = toStringArray(subcontents);
+		const levelsStr = toStringArray(levels);
+
+		const filtered = this.jsondata.filter(item => {
+			const itemSubject = String(item.metadata.subject);
+			const itemContent = String(item.metadata.content);
+			const itemSubcontent = String(item.metadata.subcontent);
+			const itemLevel = String(item.metadata.level);
+
+			const subjectMatch = subjectsStr.length === 0 || subjectsStr.includes(itemSubject);
+			const contentMatch = contentsStr.length === 0 || contentsStr.includes(itemContent);
+			const subcontentMatch = subcontentsStr.length === 0 || subcontentsStr.includes(itemSubcontent);
+			const levelMatch = levelsStr.length === 0 || levelsStr.includes(itemLevel);
+
+			return subjectMatch && contentMatch && subcontentMatch && levelMatch;
+		});
+
+		const shuffled = this.shuffleArray(filtered);
+
+		this.state.set(4, {
+			filter: {
+				subjects: subjects,
+				contents: contents,
+				subcontents: subcontents,
+				levels: levels
+			},
+			items: shuffled,
+			selectedItem: shuffled.length > 0 ? 0 : -1
 		});
 	}
 

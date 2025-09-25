@@ -37,6 +37,9 @@ export class Controller {
                 case 'study':
                     this.model.setCurrentMode(3);
                     break;
+                case 'multiQuiz':
+                    this.model.setCurrentMode(4);
+                    break;
                 default:
                     break;
             }
@@ -46,6 +49,7 @@ export class Controller {
         this.initLesson();
         this.initSearch();
         this.initStudy();
+        this.initMultiQuiz();
 
     }
 
@@ -134,6 +138,33 @@ export class Controller {
         this.view.bindStudyTest(this.studyTest.bind(this));
         this.view.bindStudyPrev(this.studyPrev.bind(this));
         this.view.bindStudyNext(this.studyNext.bind(this));
+    }
+
+    initMultiQuiz() {
+        this.view.populateMultiSelect(this.view.multiQuizSubject, this.model.getSubjects());
+        this.view.populateMultiSelect(this.view.multiQuizContent, []);
+        this.view.populateMultiSelect(this.view.multiQuizSubcontent, []);
+        this.view.populateMultiSelect(this.view.multiQuizLevel, this.model.getLevels());
+
+        let mode = 4;
+        let state = this.model.getState(mode);
+        this.view.setCounter(this.view.multiQuizId, this.view.multiQuizFraction, 'none', -1, 0);
+
+        this.view.populateData(this.view.multiQuizData, ['', '', '', '', '']);
+
+        const selects = [this.view.multiQuizSubject, this.view.multiQuizContent, this.view.multiQuizSubcontent, this.view.multiQuizLevel];
+        this.view.bindSubject(selects, this.handleMultiQuizSubject.bind(this));
+        this.view.bindContent(selects, this.handleMultiQuizContent.bind(this));
+        this.view.bindSubcontent(selects, this.handleMultiQuizSubcontent.bind(this));
+        this.view.bindLevel(selects, this.handleMultiQuizLevel.bind(this));
+
+        this.view.bindMultiQuizAnswerA(this.multiQuizAnswerA.bind(this));
+        this.view.bindMultiQuizAnswerB(this.multiQuizAnswerB.bind(this));
+        this.view.bindMultiQuizAnswerC(this.multiQuizAnswerC.bind(this));
+        this.view.bindMultiQuizAnswerD(this.multiQuizAnswerD.bind(this));
+
+        this.view.multiQuizPrev.addEventListener('click', this.multiQuizPrev.bind(this));
+        this.view.multiQuizNext.addEventListener('click', this.multiQuizNext.bind(this));
     }
 
     run() {
@@ -338,7 +369,7 @@ export class Controller {
             this.view.lessonAnswerB.classList.remove('failure');
             this.view.lessonAnswerC.classList.remove('failure');
             this.view.lessonAnswerD.classList.remove('failure');
-        } else {
+        } else if (mode == 3) {
             this.view.studyAnswerA.classList.remove('success');
             this.view.studyAnswerB.classList.remove('success');
             this.view.studyAnswerC.classList.remove('success');
@@ -347,7 +378,88 @@ export class Controller {
             this.view.studyAnswerB.classList.remove('failure');
             this.view.studyAnswerC.classList.remove('failure');
             this.view.studyAnswerD.classList.remove('failure');
+        } else if (mode == 4) {
+            this.view.multiQuizAnswerA.classList.remove('success');
+            this.view.multiQuizAnswerB.classList.remove('success');
+            this.view.multiQuizAnswerC.classList.remove('success');
+            this.view.multiQuizAnswerD.classList.remove('success');
+            this.view.multiQuizAnswerA.classList.remove('failure');
+            this.view.multiQuizAnswerB.classList.remove('failure');
+            this.view.multiQuizAnswerC.classList.remove('failure');
+            this.view.multiQuizAnswerD.classList.remove('failure');
         }
+    }
+
+    handleMultiQuizSubject(selects) {
+        const subjects = Array.from(selects[0].selectedOptions).map(o => o.value);
+        const contents = this.model.getContentsForSubjects(subjects);
+        this.view.populateMultiSelect(selects[1], contents);
+        this.view.populateMultiSelect(selects[2], []);
+
+        const levels = Array.from(selects[3].selectedOptions).map(o => o.value);
+        this.model.setFilterMultiQuiz(subjects, [], [], levels);
+
+        this.updateMultiQuizData();
+    }
+
+    handleMultiQuizContent(selects) {
+        const subjects = Array.from(selects[0].selectedOptions).map(o => o.value);
+        const contents = Array.from(selects[1].selectedOptions).map(o => o.value);
+        const subcontents = this.model.getSubcontentsForSubjectsAndContents(subjects, contents);
+        this.view.populateMultiSelect(selects[2], subcontents);
+
+        const levels = Array.from(selects[3].selectedOptions).map(o => o.value);
+        this.model.setFilterMultiQuiz(subjects, contents, [], levels);
+
+        this.updateMultiQuizData();
+    }
+
+    handleMultiQuizSubcontent(selects) {
+        const subjects = Array.from(selects[0].selectedOptions).map(o => o.value);
+        const contents = Array.from(selects[1].selectedOptions).map(o => o.value);
+        const subcontents = Array.from(selects[2].selectedOptions).map(o => o.value);
+        const levels = Array.from(selects[3].selectedOptions).map(o => o.value);
+
+        this.model.setFilterMultiQuiz(subjects, contents, subcontents, levels);
+
+        this.updateMultiQuizData();
+    }
+
+    handleMultiQuizLevel(selects) {
+        const subjects = Array.from(selects[0].selectedOptions).map(o => o.value);
+        const contents = Array.from(selects[1].selectedOptions).map(o => o.value);
+        const subcontents = Array.from(selects[2].selectedOptions).map(o => o.value);
+        const levels = Array.from(selects[3].selectedOptions).map(o => o.value);
+
+        this.model.setFilterMultiQuiz(subjects, contents, subcontents, levels);
+
+        this.updateMultiQuizData();
+    }
+
+    /* ===== HELPERS ===== */
+    updateMultiQuizData() {
+        const mode = 4;
+        const state = this.model.getState(mode);
+
+        // Se ci sono domande filtrate, seleziona la prima
+        const selectedItem = state.items.length > 0 ? 0 : -1;
+        state.selectedItem = selectedItem;
+
+        const counterId = selectedItem >= 0 ? state.items[selectedItem].metadata.id : 'none';
+        this.view.setCounter(
+            this.view.multiQuizId,
+            this.view.multiQuizFraction,
+            counterId,
+            selectedItem,
+            state.items.length
+        );
+
+        // Popola dati domanda
+        const data = selectedItem >= 0 ? this.model.getData(mode) : ['', '', '', '', ''];
+        this.view.populateData(this.view.multiQuizData, data);
+
+        // Reset colori risposte
+        this.resetAnswerColor(mode);
     }
 
     /* QUIZ HANDLERS */
@@ -561,5 +673,68 @@ export class Controller {
             let data = this.model.getData();
             this.view.populateData(this.view.studyData, [data[0], data[1], data[2], data[3], data[4]]);
         }
+    }
+
+    /*MULTIQUIZ*/
+    multiQuizAnswerA() {
+        let state = this.model.getState();
+        if (this.view.multiQuizAnswerA.innerText == state.items[state.selectedItem].a_answer) {
+            this.view.setAnswer(this.view.multiQuizAnswerA, true);
+        } else {
+            this.view.setAnswer(this.view.multiQuizAnswerA, false);
+        }
+    }
+
+    multiQuizAnswerB() {
+        let state = this.model.getState();
+        if (this.view.multiQuizAnswerB.innerText == state.items[state.selectedItem].a_answer) {
+            this.view.setAnswer(this.view.multiQuizAnswerB, true);
+        } else {
+            this.view.setAnswer(this.view.multiQuizAnswerB, false);
+        }
+    }
+
+    multiQuizAnswerC() {
+        let state = this.model.getState();
+        if (this.view.multiQuizAnswerC.innerText == state.items[state.selectedItem].a_answer) {
+            this.view.setAnswer(this.view.multiQuizAnswerC, true);
+        } else {
+            this.view.setAnswer(this.view.multiQuizAnswerC, false);
+        }
+    }
+
+    multiQuizAnswerD() {
+        let state = this.model.getState();
+        if (this.view.multiQuizAnswerD.innerText == state.items[state.selectedItem].a_answer) {
+            this.view.setAnswer(this.view.multiQuizAnswerD, true);
+        } else {
+            this.view.setAnswer(this.view.multiQuizAnswerD, false);
+        }
+    }
+
+    multiQuizPrev() {
+        const mode = 4;
+        this.model.prev();
+        const state = this.model.getState(mode);
+
+        const counterId = state.selectedItem >= 0 ? state.items[state.selectedItem].metadata.id : 'none';
+        const data = state.selectedItem >= 0 ? this.model.getData(mode) : ['', '', '', '', ''];
+
+        this.view.setCounter(this.view.multiQuizId, this.view.multiQuizFraction, counterId, state.selectedItem, state.items.length);
+        this.view.populateData(this.view.multiQuizData, data);
+        this.resetAnswerColor(mode);
+    }
+
+    multiQuizNext() {
+        const mode = 4;
+        this.model.next();
+        const state = this.model.getState(mode);
+
+        const counterId = state.selectedItem >= 0 ? state.items[state.selectedItem].metadata.id : 'none';
+        const data = state.selectedItem >= 0 ? this.model.getData(mode) : ['', '', '', '', ''];
+
+        this.view.setCounter(this.view.multiQuizId, this.view.multiQuizFraction, counterId, state.selectedItem, state.items.length);
+        this.view.populateData(this.view.multiQuizData, data);
+        this.resetAnswerColor(mode);
     }
 }
