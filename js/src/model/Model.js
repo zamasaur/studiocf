@@ -1,7 +1,47 @@
 export class Model {
 
 	constructor(jsondata) {
-		this.jsondata = jsondata;
+		this.jsondata = ((data) => {
+			let subjectCounter = 1;
+			const subjectMap = new Map();
+			const contentMap = new Map();
+			const subcontentMap = new Map();
+
+			return data.map(item => {
+				const s = item.metadata.subject;
+				const c = item.metadata.content;
+				const sc = item.metadata.subcontent;
+
+				if (!subjectMap.has(s)) {
+					subjectMap.set(s, subjectCounter++);
+				}
+				const subjectNum = subjectMap.get(s);
+
+				const contentKey = `${s}||${c}`;
+				if (!contentMap.has(contentKey)) {
+					const contentCount = Array.from(contentMap.keys())
+						.filter(k => k.startsWith(`${s}||`)).length + 1;
+					contentMap.set(contentKey, contentCount);
+				}
+				const contentNum = contentMap.get(contentKey);
+
+				const subcontentKey = `${s}||${c}||${sc}`;
+				if (!subcontentMap.has(subcontentKey)) {
+					const subcontentCount = Array.from(subcontentMap.keys())
+						.filter(k => k.startsWith(`${s}||${c}||`)).length + 1;
+					subcontentMap.set(subcontentKey, subcontentCount);
+				}
+				const subcontentNum = subcontentMap.get(subcontentKey);
+
+				const numbered = JSON.parse(JSON.stringify(item));
+				numbered.metadata.subject = `${subjectNum} ${s}`;
+				numbered.metadata.content = `${subjectNum}.${contentNum} ${c}`;
+				numbered.metadata.subcontent = `${subjectNum}.${contentNum}.${subcontentNum} ${sc}`;
+
+				return numbered;
+			});
+		})(jsondata);
+
 		this.state = new Map();
 		// 0 = quiz, 1 = lesson, 2 = search
 		this.getModes().forEach(mode => {
