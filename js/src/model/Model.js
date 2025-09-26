@@ -35,8 +35,8 @@ export class Model {
 
 				const numbered = JSON.parse(JSON.stringify(item));
 				numbered.metadata.subject = `${subjectNum} ${s}`;
-				numbered.metadata.content = `${subjectNum}.${contentNum} ${c}`;
-				numbered.metadata.subcontent = `${subjectNum}.${contentNum}.${subcontentNum} ${sc}`;
+				numbered.metadata.content = `${contentNum} ${c}`;
+				numbered.metadata.subcontent = `${subcontentNum} ${sc}`;
 
 				return numbered;
 			});
