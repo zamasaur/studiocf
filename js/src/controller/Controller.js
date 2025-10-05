@@ -163,8 +163,8 @@ export class Controller {
         this.view.bindMultiQuizAnswerC(this.multiQuizAnswerC.bind(this));
         this.view.bindMultiQuizAnswerD(this.multiQuizAnswerD.bind(this));
 
-        this.view.multiQuizPrev.addEventListener('click', this.multiQuizPrev.bind(this));
-        this.view.multiQuizNext.addEventListener('click', this.multiQuizNext.bind(this));
+        this.view.bindMultiQuizPrev(this.multiQuizPrev.bind(this));
+        this.view.bindMultiQuizNext(this.multiQuizNext.bind(this));
     }
 
     run() {
