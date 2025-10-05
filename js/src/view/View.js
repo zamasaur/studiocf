@@ -131,6 +131,11 @@ export class View {
 	populateMultiSelect(select, options) {
 		Array.from(select.getElementsByTagName("option")).forEach(o => o.remove());
 
+		let allOption = document.createElement("option");
+		allOption.textContent = "Tutti";
+		allOption.value = "__ALL__";
+		select.appendChild(allOption);
+
 		options.forEach(option => {
 			let element = document.createElement("option");
 			element.textContent = option;
@@ -140,6 +145,7 @@ export class View {
 
 		select.selectedIndex = -1;
 	}
+
 
 	populateDataMultiQuiz(data) {
 		for (let i = 0; i < this.multiQuizData.length; i++) {
@@ -306,13 +312,15 @@ export class View {
 
 	bindMultiQuizPrev(handler) {
 		this.multiQuizPrev.addEventListener('click', event => {
-			event.preventDefault(); handler();
+			event.preventDefault();
+			handler();
 		});
 	}
 
 	bindMultiQuizNext(handler) {
 		this.multiQuizNext.addEventListener('click', event => {
-			event.preventDefault(); handler();
+			event.preventDefault();
+			handler();
 		});
 	}
 }
