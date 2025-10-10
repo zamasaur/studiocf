@@ -23,9 +23,9 @@ fetch("./data.json")
                 ignoreLocation: true,
                 // ignoreFieldNorm: false,
                 // fieldNormWeight: 1,
-                keys: event.data.options.keys
+                keys: [event.data.queries[0].key]
             };
 
-            self.postMessage(new Fuse(list, options).search(event.data.query));
+            self.postMessage(new Fuse(list, options).search(event.data.queries[0].value));
         });
     });

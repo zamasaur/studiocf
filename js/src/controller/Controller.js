@@ -623,8 +623,7 @@ export class Controller {
             this.view.populateData(this.view.searchData, [data[0], data[1]]);
         } else {
             this.worker.postMessage({
-                query: this.view.searchSearchQuestion.value,
-                options: { keys: ["question"] }
+                queries: [{ key: "question", value: this.view.searchSearchQuestion.value }]
             });
         }
     }
@@ -646,8 +645,7 @@ export class Controller {
             this.view.populateData(this.view.searchData, [data[0], data[1]]);
         } else {
             this.worker.postMessage({
-                query: this.view.searchSearchAnswer.value,
-                options: { keys: ["a_answer"] }
+                queries: [{ key: "a_answer", value: this.view.searchSearchAnswer.value }]
             });
         }
     }
