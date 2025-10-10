@@ -40,7 +40,8 @@ export class View {
 		this.lessonPlaypause = document.querySelector('#lesson .playpause');
 
 		/*SEARCH*/
-		this.searchSearch = document.querySelector('#search .search');
+		this.searchSearchQuestion = document.querySelector('#search .searchquestion');
+		this.searchSearchAnswer = document.querySelector('#search .searchanswer');
 
 		this.searchId = document.querySelector('#search .id');
 		this.searchFraction = document.querySelector('#search .fraction');
@@ -229,8 +230,14 @@ export class View {
 		});
 	}
 
-	bindSearchSearch(handler) {
-		this.searchSearch.addEventListener('keypress', event => {
+	bindSearchSearchQuestion(handler) {
+		this.searchSearchQuestion.addEventListener('keypress', event => {
+			handler(event);
+		});
+	}
+
+	bindSearchSearchAnswer(handler) {
+		this.searchSearchAnswer.addEventListener('keypress', event => {
 			handler(event);
 		});
 	}

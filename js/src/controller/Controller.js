@@ -4,7 +4,7 @@ export class Controller {
         this.model = model;
         this.view = view;
 
-        this.worker = new Worker('./js/worker.js');
+        this.worker = new Worker(`./js/worker.js?ts=${Date.now()}`);
 
         this.worker.addEventListener('message', event => {
             let mode = 2;
@@ -111,7 +111,8 @@ export class Controller {
         let state = this.model.getState(mode);
         this.view.setCounter(this.view.searchId, this.view.searchFraction, 'none', state.selectedItem, state.items.length);
 
-        this.view.bindSearchSearch(this.searchSearch.bind(this));
+        this.view.bindSearchSearchQuestion(this.searchSearchQuestion.bind(this));
+        this.view.bindSearchSearchAnswer(this.searchSearchAnswer.bind(this));
         this.view.bindSearchPrev(this.searchPrev.bind(this));
         this.view.bindSearchNext(this.searchNext.bind(this));
     }
@@ -571,12 +572,21 @@ export class Controller {
     }
 
     /*SEARCH HANDLERS*/
-    searchSearch(event) {
+    searchSearchQuestion(event) {
         var code = (event.keyCode ? event.keyCode : e.which);
         console.log(code);
         if (code == 13) {
             event.preventDefault();
-            this.#doSearch();
+            this.#doSearchQuestion();
+        }
+    }
+
+    searchSearchAnswer(event) {
+        var code = (event.keyCode ? event.keyCode : e.which);
+        console.log(code);
+        if (code == 13) {
+            event.preventDefault();
+            this.#doSearchAnswer();
         }
     }
 
@@ -596,11 +606,12 @@ export class Controller {
         this.view.populateData(this.view.searchData, this.model.getData());
     }
 
-    async #doSearch() {
-        this.view.searchFraction.innerText = 'Loading...'
+    async #doSearchQuestion() {
+        this.view.searchFraction.innerText = 'Loading...';
+        this.view.searchSearchAnswer.value = '';
 
-        let firstChar = Array.from(this.view.searchSearch.value)[0];
-        let number = parseInt(this.view.searchSearch.value.slice(1));
+        let firstChar = Array.from(this.view.searchSearchQuestion.value)[0];
+        let number = parseInt(this.view.searchSearchQuestion.value.slice(1));
 
         this.model.resetState();
 
@@ -611,7 +622,33 @@ export class Controller {
             let data = this.model.getData();
             this.view.populateData(this.view.searchData, [data[0], data[1]]);
         } else {
-            this.worker.postMessage(this.view.searchSearch.value);
+            this.worker.postMessage({
+                query: this.view.searchSearchQuestion.value,
+                options: { keys: ["question"] }
+            });
+        }
+    }
+
+    async #doSearchAnswer() {
+        this.view.searchFraction.innerText = 'Loading...';
+        this.view.searchSearchQuestion.value = '';
+
+        let firstChar = Array.from(this.view.searchSearchAnswer.value)[0];
+        let number = parseInt(this.view.searchSearchAnswer.value.slice(1));
+
+        this.model.resetState();
+
+        if (firstChar == '#' && !isNaN(number) && number >= 0 && number <= this.model.getState().items.length - 1) {
+            this.model.setSelectedItem(number);
+            let state = this.model.getState();
+            this.view.setCounter(this.view.searchId, this.view.searchFraction, number, state.selectedItem, state.items.length);
+            let data = this.model.getData();
+            this.view.populateData(this.view.searchData, [data[0], data[1]]);
+        } else {
+            this.worker.postMessage({
+                query: this.view.searchSearchAnswer.value,
+                options: { keys: ["a_answer"] }
+            });
         }
     }
 
