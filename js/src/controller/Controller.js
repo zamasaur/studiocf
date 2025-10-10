@@ -577,7 +577,7 @@ export class Controller {
         console.log(code);
         if (code == 13) {
             event.preventDefault();
-            this.#doSearchQuestion();
+            this.#doSearch();
         }
     }
 
@@ -586,7 +586,7 @@ export class Controller {
         console.log(code);
         if (code == 13) {
             event.preventDefault();
-            this.#doSearchAnswer();
+            this.#doSearch();
         }
     }
 
@@ -606,9 +606,8 @@ export class Controller {
         this.view.populateData(this.view.searchData, this.model.getData());
     }
 
-    async #doSearchQuestion() {
+    async #doSearch() {
         this.view.searchFraction.innerText = 'Loading...';
-        this.view.searchSearchAnswer.value = '';
 
         let firstChar = Array.from(this.view.searchSearchQuestion.value)[0];
         let number = parseInt(this.view.searchSearchQuestion.value.slice(1));
@@ -622,30 +621,18 @@ export class Controller {
             let data = this.model.getData();
             this.view.populateData(this.view.searchData, [data[0], data[1]]);
         } else {
+            if (this.view.searchSearchQuestion.value == '' && this.view.searchSearchAnswer.value == '') {
+                return;
+            }
+            let queries = [];
+            if (this.view.searchSearchQuestion.value != '') {
+                queries.push({ key: "question", value: this.view.searchSearchQuestion.value });
+            }
+            if (this.view.searchSearchAnswer.value != '') {
+                queries.push({ key: "a_answer", value: this.view.searchSearchAnswer.value });
+            }
             this.worker.postMessage({
-                queries: [{ key: "question", value: this.view.searchSearchQuestion.value }]
-            });
-        }
-    }
-
-    async #doSearchAnswer() {
-        this.view.searchFraction.innerText = 'Loading...';
-        this.view.searchSearchQuestion.value = '';
-
-        let firstChar = Array.from(this.view.searchSearchAnswer.value)[0];
-        let number = parseInt(this.view.searchSearchAnswer.value.slice(1));
-
-        this.model.resetState();
-
-        if (firstChar == '#' && !isNaN(number) && number >= 0 && number <= this.model.getState().items.length - 1) {
-            this.model.setSelectedItem(number);
-            let state = this.model.getState();
-            this.view.setCounter(this.view.searchId, this.view.searchFraction, number, state.selectedItem, state.items.length);
-            let data = this.model.getData();
-            this.view.populateData(this.view.searchData, [data[0], data[1]]);
-        } else {
-            this.worker.postMessage({
-                queries: [{ key: "a_answer", value: this.view.searchSearchAnswer.value }]
+                queries: queries
             });
         }
     }

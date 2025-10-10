@@ -2,30 +2,39 @@ console.log('worker');
 
 self.importScripts('./fuse.js');
 
+let list = [];
+
 fetch("./data.json")
-    .then(response => {
-        return response.json();
-    })
+    .then(response => response.json())
     .then(jsondata => {
-        const list = jsondata;
+        list = jsondata;
+
         self.addEventListener('message', event => {
-            let options = {
-                // isCaseSensitive: false,
-                // includeScore: false,
-                // shouldSort: true,
-                // includeMatches: false,
-                // findAllMatches: false,
-                minMatchCharLength: 3,
-                // location: 0,
+            const queries = event.data.queries || [];
+            if (queries.length === 0) {
+                self.postMessage([]);
+                return;
+            }
+
+            const fuseOptions = {
                 threshold: 0.5,
-                // distance: 100,
-                // useExtendedSearch: false,
-                ignoreLocation: true,
-                // ignoreFieldNorm: false,
-                // fieldNormWeight: 1,
-                keys: [event.data.queries[0].key]
+                minMatchCharLength: 3,
+                ignoreLocation: true
             };
 
-            self.postMessage(new Fuse(list, options).search(event.data.queries[0].value));
+            let resultSets = queries.map(q => {
+                const fuse = new Fuse(list, { ...fuseOptions, keys: [q.key] });
+                return new Set(fuse.search(q.value).map(r => r.item.metadata.id));
+            });
+
+            let intersection = resultSets.reduce((a, b) =>
+                new Set([...a].filter(x => b.has(x)))
+            );
+
+            let finalResults = list
+                .filter(item => intersection.has(item.metadata.id))
+                .map(item => ({ item })); // Wrappiamo ogni oggetto per compatibilità
+
+            self.postMessage(finalResults);
         });
     });
