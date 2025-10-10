@@ -391,134 +391,48 @@ export class Controller {
     }
 
     handleMultiQuizSubject(selects) {
-        const subjectSelect = selects[0];
-        const selected = Array.from(subjectSelect.selectedOptions).map(o => o.value);
-
-        if (selected.includes('__ALL__')) {
-            Array.from(subjectSelect.options).forEach(opt => opt.selected = true);
-        }
-
-        let subjects = Array.from(subjectSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        if (subjects.length < subjectSelect.options.length - 1) {
-            subjectSelect.querySelector('option[value="__ALL__"]').selected = false;
-        }
-
+        const subjects = Array.from(selects[0].selectedOptions).map(o => o.value);
         const contents = this.model.getContentsForSubjects(subjects);
         this.view.populateMultiSelect(selects[1], contents);
         this.view.populateMultiSelect(selects[2], []);
 
-        const levels = Array.from(selects[3].selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
+        const levels = Array.from(selects[3].selectedOptions).map(o => o.value);
         this.model.setFilterMultiQuiz(subjects, [], [], levels);
+
         this.updateMultiQuizData();
     }
 
     handleMultiQuizContent(selects) {
-        const subjectSelect = selects[0];
-        const contentSelect = selects[1];
-
-        const subjects = Array.from(subjectSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        const selectedContents = Array.from(contentSelect.selectedOptions).map(o => o.value);
-
-        if (selectedContents.includes('__ALL__')) {
-            Array.from(contentSelect.options).forEach(opt => opt.selected = true);
-        }
-
-        let contents = Array.from(contentSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        if (contents.length < contentSelect.options.length - 1) {
-            contentSelect.querySelector('option[value="__ALL__"]').selected = false;
-        }
-
+        const subjects = Array.from(selects[0].selectedOptions).map(o => o.value);
+        const contents = Array.from(selects[1].selectedOptions).map(o => o.value);
         const subcontents = this.model.getSubcontentsForSubjectsAndContents(subjects, contents);
         this.view.populateMultiSelect(selects[2], subcontents);
 
-        const levels = Array.from(selects[3].selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
+        const levels = Array.from(selects[3].selectedOptions).map(o => o.value);
         this.model.setFilterMultiQuiz(subjects, contents, [], levels);
+
         this.updateMultiQuizData();
     }
 
     handleMultiQuizSubcontent(selects) {
-        const subjectSelect = selects[0];
-        const contentSelect = selects[1];
-        const subcontentSelect = selects[2];
-
-        const subjects = Array.from(subjectSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        const contents = Array.from(contentSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        const selectedSubcontents = Array.from(subcontentSelect.selectedOptions).map(o => o.value);
-
-        if (selectedSubcontents.includes('__ALL__')) {
-            Array.from(subcontentSelect.options).forEach(opt => opt.selected = true);
-        }
-
-        let subcontents = Array.from(subcontentSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        if (subcontents.length < subcontentSelect.options.length - 1) {
-            subcontentSelect.querySelector('option[value="__ALL__"]').selected = false;
-        }
-
-        const levels = Array.from(selects[3].selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
+        const subjects = Array.from(selects[0].selectedOptions).map(o => o.value);
+        const contents = Array.from(selects[1].selectedOptions).map(o => o.value);
+        const subcontents = Array.from(selects[2].selectedOptions).map(o => o.value);
+        const levels = Array.from(selects[3].selectedOptions).map(o => o.value);
 
         this.model.setFilterMultiQuiz(subjects, contents, subcontents, levels);
+
         this.updateMultiQuizData();
     }
 
     handleMultiQuizLevel(selects) {
-        const subjectSelect = selects[0];
-        const contentSelect = selects[1];
-        const subcontentSelect = selects[2];
-        const levelSelect = selects[3];
-
-        const subjects = Array.from(subjectSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        const contents = Array.from(contentSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        const subcontents = Array.from(subcontentSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        const selectedLevels = Array.from(levelSelect.selectedOptions).map(o => o.value);
-
-        if (selectedLevels.includes('__ALL__')) {
-            Array.from(levelSelect.options).forEach(opt => opt.selected = true);
-        }
-
-        let levels = Array.from(levelSelect.selectedOptions)
-            .map(o => o.value)
-            .filter(v => v !== '__ALL__');
-
-        if (levels.length < levelSelect.options.length - 1) {
-            levelSelect.querySelector('option[value="__ALL__"]').selected = false;
-        }
+        const subjects = Array.from(selects[0].selectedOptions).map(o => o.value);
+        const contents = Array.from(selects[1].selectedOptions).map(o => o.value);
+        const subcontents = Array.from(selects[2].selectedOptions).map(o => o.value);
+        const levels = Array.from(selects[3].selectedOptions).map(o => o.value);
 
         this.model.setFilterMultiQuiz(subjects, contents, subcontents, levels);
+
         this.updateMultiQuizData();
     }
 
